@@ -1,0 +1,81 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}\usepackage{newtxtext,newtxmath}
+\usepackage[margin=1in]{geometry}\usepackage{parskip}
+\begin{document}
+\thispagestyle{empty}
+\noindent Long Zhang\\
+Hubei University of Automotive Technology\\
+Shiyan 442002, China\\
+20230100@huat.edu.cn\\[6pt]
+\noindent To the Editor-in-Chief,\\
+\emph{Engineering Applications of Artificial Intelligence}\\[10pt]
+
+\noindent Dear Editor-in-Chief, \emph{Engineering Applications of Artificial Intelligence},
+
+We submit our manuscript, ``A Data-Efficient, Differentiable Reflectarray Unit-Cell Surrogate via
+Resonance-Aware Active Sampling, with a Full-Wave Anomalous-Reflection Closure,'' for consideration as a
+research article.
+
+\paragraph{In one sentence.} We introduce a \emph{resonance-aware} active-sampling methodology that learns a
+sharply resonant electromagnetic response from $\sim$16 full-wave samples and supplies differentiable design
+gradients---and we show it \emph{beats every off-the-shelf acquisition rule we tested}, including textbook
+Gaussian-process uncertainty sampling and the standard published adaptive sampler (LOLA--Voronoi), while the
+advantage \emph{transfers across three cell topologies and even to non-electromagnetic resonances}.
+
+\paragraph{Artificial-intelligence contribution.} The core of the paper is an applied machine-learning
+methodology for surrogate modelling of an expensive-to-sample, sharply resonant response. (i) We propose
+a \emph{resonance-aware active-learning acquisition} that places samples by a curvature criterion and,
+crucially, in a fully \emph{online} form that scores candidates using only already-acquired data---no
+oracle access to the target surface. Coupled to a lightweight \emph{differentiable} neural surrogate, it
+learns the full two-parameter reflection-phase response of a 24-GHz cell from about 16 samples and supplies
+full-wave-consistent autodiff design gradients usable in a gradient-based inverse-design loop. We quantify
+the advantage as a \emph{bootstrapped data-efficiency law}: in the resonance region the error decays with a
+steeper exponent (online $N^{-1.7}$, statistically separated by non-overlapping 95\% confidence intervals
+from uniform and random sampling). Critically for an applied-AI venue, the criterion is not merely better
+than uniform/random: it beats both the textbook information-theoretic baseline (Gaussian-process
+maximum-variance sampling, $\sim$20$\times$) and the standard published adaptive sampler for surrogate
+modelling (LOLA--Voronoi, $\sim$7$\times$), because those space-fill whereas a resonant response rewards
+crowding the band. The advantage also \emph{generalises}: it recurs across three reflectarray cell
+topologies (patch, cross dipole, dual-resonance) and, changing only the oracle, \emph{transfers to two
+non-electromagnetic resonances} (a driven-oscillator/RLC line shape and a Fano resonance)---evidence that it
+is a property of the acquisition criterion, not of one device. It also \emph{widens} when a third geometry
+parameter is added, provided the acquisition is stratified along the new axis---a concrete lesson on scaling
+active learning to higher dimension. (ii) Through a controlled ablation we report a device-level finding:
+for this resonant response a \emph{total-field} physics-informed Maxwell-residual loss is \emph{unnecessary
+and counterproductive}, acting as an anti-regulariser relative to well-placed data. This holds not only
+against a naive soft-constraint hybrid but against an advanced gradient-norm/NTK-balanced hybrid
+($\sim$26$\times$ worse than pure data); the effective lever is data placement, not the physics residual
+(we scope this to total-field formulations). These results give a transferable recipe---when active
+sampling beats physics-informed regularisation for resonant surrogates---and add a quantified, device-level
+case to the PINN failure-mode literature.
+
+\paragraph{Engineering application and fit to EAAI.} The application is low-cost, gradient-based
+characterisation and inverse design of reflectarray and coded-metasurface unit cells, an electromagnetic
+design problem of practical importance. The pipeline is validated end to end against the openEMS full-wave
+solver: an inverse-design loop hits eight target reflections to within $0.9^\circ$ on average, and an
+end-to-end anomalous-reflection closure aims the reflected order to within $\approx 0.3^\circ$ of the
+generalized-Snell prediction. We believe this combination---an active-learning and differentiable-surrogate
+methodology, validated end to end on a real engineering task---fits the applied-AI scope of \emph{Engineering
+Applications of Artificial Intelligence}.
+
+\paragraph{Scope.} This is, by design, a simulation-only study, and we scope it honestly: the
+anomalous-reflection result is reported as a proof-of-pipeline closure (correct deflection
+angle; efficiency
+limited by the single-resonance cell), not a finished aperture. We regard this transparent scoping as a
+matter of rigor rather than a limitation of the contribution, which is methodological.
+
+\paragraph{Assurances.} This manuscript is original, has not been published previously, and is not under
+consideration by any other journal. The authors declare no competing interests. All code and data are
+openly available at \texttt{https://github.com/zlera20230100/reflectarray-surrogate} (archived at Zenodo,
+DOI \texttt{10.5281/zenodo.20809888}), and the manuscript includes a reproducibility table and appendices
+specifying the full-wave solver configuration and the PINN residual. Highlights and a graphical abstract
+accompany this submission. Generative AI was used only for language polishing; all technical content,
+analysis, and conclusions are the authors' own. We are glad to suggest qualified reviewers on request.
+
+Thank you for your consideration.
+
+\vspace{10pt}
+\noindent Sincerely,\\
+Long Zhang, on behalf of the authors\\
+Hubei University of Automotive Technology
+\end{document}

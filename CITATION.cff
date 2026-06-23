@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software or data, please cite it as below."
+title: "Reproducibility code and data for: Resonance-Aware Active Sampling for Data-Efficient Differentiable Surrogates of Resonant Responses: A Reflectarray Unit-Cell Case Study"
+type: software
+license: MIT
+doi: 10.5281/zenodo.20809888
+authors:
+  - family-names: Zhang
+    given-names: Long
+    orcid: "https://orcid.org/0009-0004-4109-6587"
+    affiliation: "Hubei University of Automotive Technology"
+    email: 20230100@huat.edu.cn
+  - family-names: Shi
+    given-names: Xuan
+    affiliation: "Hubei University of Automotive Technology"
+  - family-names: Ma
+    given-names: Liang
+    affiliation: "Hubei University of Automotive Technology"
+  - family-names: Wu
+    given-names: Shengjun
+    affiliation: "Hubei University of Automotive Technology"
+  - family-names: Wu
+    given-names: Zijuan
+    affiliation: "Hubei University of Automotive Technology"
