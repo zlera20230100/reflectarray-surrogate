@@ -408,7 +408,7 @@ objection is that any sensible active-learning rule would do as well. It does no
 information-theoretic baseline---Gaussian-process \emph{uncertainty} (maximum posterior-variance) sampling,
 fit on the acquired anchors only---and it lands at \SI{5.56}{\degree} resonance error with exponent
 $k\!=\!0.95\,[0.84,1.04]$ at $N\!=\!36$: barely better than uniform (\SI{6.9}{\degree}, $0.82$) and
-$\sim\!20\times$ worse than the resonance-aware criterion (\SI{0.28}{\degree}, $k\!=\!2.26$, this comparison run).\footnote{The GP and LOLA--Voronoi benchmarks were re-run jointly with the resonance-aware criterion under one shared seed and configuration, so every rule is evaluated under identical conditions. The resonance-aware value in this joint comparison (\SI{0.28}{\degree}, $k\!=\!2.26$) now agrees with the headline data-efficiency run of Tables~\ref{tab:dataeff}--\ref{tab:scaling} (\SI{0.29}{\degree}, $k\!=\!2.28$): the small earlier discrepancy (a \SI{0.37}{\degree}, $k\!=\!2.07$ headline figure) was a low-seed (six-seed) artefact that disappears once the headline run is repeated over twenty seeds---the two runs now coincide at $\approx\!\SI{0.29}{\degree}$, $k\!\approx\!2.27$.} The reason GP uncertainty falls short is
+$\sim\!20\times$ worse than the resonance-aware criterion (\SI{0.28}{\degree}, $k\!=\!2.26$, this comparison run).\footnote{The GP and LOLA--Voronoi benchmarks were re-run jointly with the resonance-aware criterion under one shared seed and configuration, so every rule is evaluated under identical conditions. The resonance-aware value in this joint comparison (\SI{0.28}{\degree}, $k\!=\!2.26$) now agrees with the headline data-efficiency run of Tables~\ref{tab:dataeff}--\ref{tab:scaling} (\SI{0.29}{\degree}, $k\!=\!2.28$): the small earlier discrepancy (a \SI{0.37}{\degree}, $k\!=\!2.07$ headline figure) was a low-seed (six-seed) artefact that disappears once the headline run is repeated over twenty seeds---the two runs now coincide at $\approx\!\SI{0.29}{\degree}$, $k\!\approx\!2.28$.} The reason GP uncertainty falls short is
 instructive: maximum-variance sampling \emph{space-fills}---it spreads points to reduce global
 uncertainty---whereas a resonance-dominated response needs points \emph{crowded} into the narrow band where
 the phase rotates. Part of this shortfall is a \emph{stationarity} artefact: replacing the stationary kernel
@@ -440,14 +440,18 @@ are best at every budget; the published adaptive sampler LOLA--Voronoi~\cite{cro
 Gaussian-process maximum-variance sampling sit in between, and uniform/random are worst---because only a
 resonance-\emph{targeted} rule crowds the narrow band where the design-relevant phase rotates. This is the
 paper's methodological claim: a resonance-targeted acquisition beats every off-the-shelf rule we tested, and the
-online variant delivers it without oracle access.}
+online variant delivers it without oracle access. These cross-rule comparison curves use the six-seed protocol of
+Table~\ref{tab:repro} and are not directly comparable to the twenty-seed budgets in Tables~\ref{tab:dataeff}--\ref{tab:scaling};
+the ranking is what matters here and is stable under both seed counts.}
 \label{fig:acq}
 \end{figure}
 
 \begin{table}[!ht]\centering\small
 \caption{Resonance-region phase error (deg, mean$\pm$std over 20 seeds) vs anchor budget $N$ for the three
 placement strategies. Resonance-aware sampling is separated from uniform/random outside the error bars at
-every $N$.}
+every $N$. (The small resonance-aware uptick at $N\!=\!20$, $\SI{0.94}{\degree}$ between $\SI{0.78}{\degree}$ at $N\!=\!16$
+and $\SI{0.43}{\degree}$ at $N\!=\!25$, is within the $\pm$std bands and reflects seed-to-seed variance, not a reversal of the
+downward trend.)}
 \label{tab:dataeff}
 \begin{tabular}{cccc}
 \toprule
