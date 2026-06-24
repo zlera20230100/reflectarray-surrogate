@@ -16,6 +16,15 @@
 \usepackage[margin=1in]{geometry}
 \usepackage[hidelinks]{hyperref}
 \newcommand{\im}{\mathrm{j}}
+% Float placement: let large floats share pages with text and require float pages to be
+% nearly full, so no half-empty float page is created (reduces page whitespace).
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.06}
+\renewcommand{\floatpagefraction}{0.85}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{5}
 % =====================================================================================
 % PROPOSED HIGHLIGHTS for EAAI submission (separate Highlights file; 3-5 bullets, <=85 chars
 % incl. spaces). Do NOT place in the manuscript body; authors copy these into the system.
@@ -270,7 +279,7 @@ oracle-free online variant (committee disagreement between two interpolants). Th
 criterion is that, unlike a global uncertainty rule, it crowds the narrow band where the design-relevant
 phase actually rotates (Table~\ref{tab:acqcompare}).
 
-\begin{table}[H]\centering
+\begin{table}[!ht]\centering
 \caption{Where the resonance-aware criterion differs from the acquisition rules a practitioner would
 otherwise reach for: only it concentrates samples in the narrow resonance band rather than space-filling
 (quantitative comparisons in Section~\ref{sec:eff}).}
@@ -309,7 +318,7 @@ task: a data-free PINN (Maxwell residual only, no anchors) and a physics-informe
 residual plus the anchor data of Eq.~\eqref{eq:data}), to test directly whether the physics residual
 helps. Settings are in Table~\ref{tab:repro}.
 
-\begin{table}[H]\centering\small
+\begin{table}[!ht]\centering\small
 \caption{Reproducibility settings. The full-wave reference is openEMS FDTD on an $11\times9=99$-point
 $(L_y,L_x)$ grid in the \SI{24}{GHz} waveguide simulator; surrogate and baseline training as listed.}
 \label{tab:repro}
@@ -429,7 +438,7 @@ online variant delivers it without oracle access.}
 \label{fig:acq}
 \end{figure}
 
-\begin{table}[H]\centering\small
+\begin{table}[!ht]\centering\small
 \caption{Resonance-region phase error (deg, mean$\pm$std over 6 seeds) vs anchor budget $N$ for the three
 placement strategies. Resonance-aware sampling is separated from uniform/random outside the error bars at
 every $N$.}
@@ -448,7 +457,7 @@ $N$ & uniform & random & resonance-aware \\
 \end{tabular}
 \end{table}
 
-\begin{table}[H]\centering\small
+\begin{table}[!ht]\centering\small
 \caption{Power-law exponent $k$ in $\varepsilon(N)=C\,N^{-k}$ (6 seeds; bootstrap 95\% CI). In the
 resonance region the resonance-aware exponent is statistically separated from \emph{uniform}; its CI
 overlaps \emph{random} only because the six-point random fit has a very wide CI, but random is dominated
@@ -506,7 +515,7 @@ anchors the differentiable MLP attains \SI{0.42}{\degree} resonance error, Gauss
 \SI{0.58}{\degree}, and RBF interpolation \SI{4.93}{\degree}---the neural and GP surrogates remain an order
 of magnitude tighter than RBF on the same anchors, mirroring the 2-D comparison of Section~\ref{sec:base}.
 
-\begin{table}[H]\centering\small
+\begin{table}[!ht]\centering\small
 \caption{Three-parameter cell: resonance-region phase error (deg, mean$\pm$std, 5 seeds) vs anchor budget
 $N$ (of 324). The naive global criterion fails (stuck $38$--$59^\circ$); \emph{$h$-stratified}
 resonance-aware sampling dominates and widens its lead---uniform never reaches the accuracy it attains.}
@@ -675,7 +684,7 @@ scale---so the neural surrogate is not a gratuitous choice: it is the model that
 resonance-aware anchors while still providing autodiff geometry gradients (Table~\ref{tab:baseline},
 Fig.~\ref{fig:baseline2}).
 
-\begin{table}[H]\centering\small
+\begin{table}[!ht]\centering\small
 \caption{Held-out phase MAE (deg) vs the differentiable MLP, RBF interpolation, and Gaussian-process
 kriging, at matched anchor budgets. The MLP is best at every budget; the classical interpolants suffer
 the same clustered-anchor pathology as the SVR (kriging worst), justifying the neural surrogate.}
@@ -734,7 +743,7 @@ $-107$, the surrogate $-119$, and the coarse grid $-171$\,deg/mm). The moderate 
 grid therefore reflects the yardstick's truncation error, not surrogate inaccuracy; the inverse-design
 results below confirm the gradient drives optimisation.
 
-\begin{table}[H]\centering\small
+\begin{table}[!ht]\centering\small
 \caption{Fine vs coarse full-wave gradient check in the resonance band. A dedicated $\pm\SI{0.1}{mm}$
 full-wave finite difference (fine, a finer-resolved reference) shows the coarse $0.4$-mm grid difference
 over-estimates $\partial\angle\Gamma/\partial L_y$, while the surrogate's autodiff gradient is much closer
@@ -787,7 +796,7 @@ not a confident wrong answer.}
 \label{fig:ood}
 \end{figure}
 
-\begin{table}[H]\centering\small
+\begin{table}[!ht]\centering\small
 \caption{Two-parameter inverse design. Eight target reflections (phase and magnitude drawn from the
 achievable surface), the surrogate-solved geometry, and the openEMS-verified achieved values.}
 \label{tab:inverse}
@@ -1055,7 +1064,7 @@ $\approx\!\SI{0.3}{\degree}$ at every super-period; efficiency is reported hones
 angle is correct but not dominant, consistent with the single-resonance phase coverage and the
 non-local-element requirement discussed in Section~\ref{sec:steer}.
 
-\begin{table}[H]\centering\small
+\begin{table}[!ht]\centering\small
 \caption{Full-wave anomalous reflection by a surrogate-synthesised phase-gradient metagrating
 ($\SI{259}{\degree}$ cell, $h=\SI{1.5}{mm}$); angles as magnitudes, the order sign alternating with $M$.}
 \label{tab:steer}
