@@ -13,6 +13,7 @@
 \usepackage{booktabs}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\floatstyle{ruled}\restylefloat{algorithm}  % ruled header bar + top/bottom rules (table-like)
 \usepackage[margin=1in]{geometry}
 \usepackage[hidelinks]{hyperref}
 \newcommand{\im}{\mathrm{j}}
@@ -297,7 +298,7 @@ Query-by-committee~\cite{settles2012} & committee disagreement & data-driven (ou
 \end{tabular}
 \end{table}
 
-\begin{algorithm}[t]
+\begin{algorithm}[!ht]
 \caption{Resonance-aware active sampling}\label{alg:active}
 \begin{algorithmic}[1]
 \State $\mathcal{A}\gets$ corner geometries of the design box
