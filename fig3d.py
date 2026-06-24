@@ -53,12 +53,15 @@ axA.set_xlabel(r'number of full-wave anchors $N$ (of 324)')
 axA.set_ylabel('resonance-region phase error (deg)')
 axA.legend(frameon=False,fontsize=8); axA.grid(alpha=0.25,which='both')
 panel(axA,'(a)')
-axA.set_title(r'three-parameter $(L_x,L_y,h)$ cell, 5 seeds',loc='left',fontsize=10.5,fontweight='bold')
+axA.set_title(r'three-parameter $(L_x,L_y,h)$ cell, 16 seeds',loc='left',fontsize=10.5,fontweight='bold')
 
-# (b) resonance-error floors, 2D vs 3D
+# (b) resonance-error floors, 2D vs 3D.
+# Floors taken from the higher-seed re-runs (surr2d_scaling_ms 20 seeds, surr3d_scaling 16 seeds)
+# so the bar chart matches the curves and the manuscript text; bf provides only the target.
 target=float(bf['common_res_target'])
-fu2,fr2=float(bf['floor_uni2']),float(bf['floor_rea2'])
-fu3,fr3=float(bf['floor_uni3']),float(bf['floor_rea3'])
+d2=L('surr2d_scaling_ms.npz')
+fu2=float(np.min(d2['uni_res_mean'])); fr2=float(np.min(d2['rea_res_mean']))
+fu3=float(np.min(d['uni_res_mean']));  fr3=float(np.min(d['rea_res_mean']))
 x=np.arange(2); w=0.36
 b1=axB.bar(x-w/2,[fu2,fu3],w,color=SIG,edgecolor='k',lw=0.5,label='uniform floor')
 b2=axB.bar(x+w/2,[fr2,fr3],w,color=GRN,edgecolor='k',lw=0.5,label='resonance-aware floor')

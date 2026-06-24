@@ -26,7 +26,7 @@ S.resonance_aware_anchors = resonance_aware_balanced
 
 OUT_DIR = os.path.dirname(os.path.abspath(__file__))
 BUDGETS = (20, 30, 45, 60, 90, 120)
-N_SEEDS = 5
+N_SEEDS = int(os.environ.get('N_SEEDS', '5'))
 N_BOOT = 2000
 ITERS = 8000
 RNG_BOOT = np.random.default_rng(12345)

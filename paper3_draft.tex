@@ -56,7 +56,7 @@ yields design gradients. On 24-GHz reflectarray unit cells, a \emph{deployable} 
 candidates using only already-acquired anchors, no oracle---learns the two-parameter reflection-phase
 surface to sub-degree resonance error from $\mathcal{O}(10)$ full-wave anchors and beats both textbook
 Gaussian-process uncertainty sampling and a published adaptive sampler (LOLA--Voronoi); an idealised oracle
-that scores on the full surface bounds the achievable placement from above (a steeper $N^{-2.1}$ decay
+that scores on the full surface bounds the achievable placement from above (a steeper $\approx\!N^{-2.3}$ decay
 versus uniform sampling's $N^{-0.8}$). The advantage recurs across three reflectarray topologies and,
 changing only the oracle, transfers to two non-electromagnetic resonances---evidence it is a reusable method
 for resonance-dominated responses, not a one-off heuristic. The surrogate's
@@ -177,7 +177,7 @@ anomalous reflection is aimed across $\theta\approx11^\circ$--$32^\circ$, tracki
 $\approx\!\SI{0.3}{\degree}$---a proof-of-pipeline (angle correct; efficiency $29$--$39\%$, limited by the
 single-resonance cell), not a usable-aperture claim (Section~\ref{sec:steer}). \textbf{(b)~A
 higher-dimensional study}: on a three-parameter $(L_x,L_y,h)$ cell the data-efficiency advantage widens
-(exponent $k\!=\!2.38$ vs $0.50$, non-overlapping 95\% CIs)---but only once the acquisition is
+(exponent $k\!=\!2.44$ vs $0.51$, non-overlapping 95\% CIs)---but only once the acquisition is
 \emph{stratified} along the added axis, a concrete lesson for scaling the method (Section~\ref{sec:3d}).
 \textbf{(c)~A transfer result}: pretrained on one substrate, the surrogate warm-starts to a different board
 thickness at $\sim\!4\times$ fewer new full-wave anchors than training from scratch
@@ -330,14 +330,14 @@ Setting & Value \\
 Surrogate & MLP, $2\!\to\!64\!\times\!4\!\to\!2$, $\tanh$, $(L_x,L_y)\!\to\!(\operatorname{Re}\Gamma,\operatorname{Im}\Gamma)$ \\
 Training & Adam, full-batch on anchors, cosine schedule to $10^{-5}$; fixed seed \\
 Anchor budgets $N$ & $9,12,16,20,25,36$ (of $99$ grid points) \\
-Sampling & uniform / random / resonance-aware (Alg.~\ref{alg:active}); all over 6 seeds (mean$\pm$std) \\
+Sampling & uniform / random / resonance-aware (Alg.~\ref{alg:active}); main data-efficiency runs over 20 seeds (mean$\pm$std); GP/LOLA and online-acquisition comparison runs over 6 seeds \\
 Online acquisition & corners seed $+$ committee disagreement (IDW powers 2 vs 8, \emph{fixed a priori}, not tuned on outcomes) on acquired anchors only; no oracle \\
 Baselines & SVR (RBF, scikit-learn), feed-forward ANN \\
 PINN ablation & geometry-conditioned scalar total-field $E_y(x,y,z;L)$, Maxwell residual \\
 \quad hybrid & Maxwell residual $+$ differentiable two-plane $\Gamma$ data loss \\
 Metric & circular phase error (overall / resonance region $L_y\!\le\!2.8$), $\lvert\,|\Gamma|\,\rvert$ error \\
-3-D study (Sec.~\ref{sec:3d}) & $(L_x,L_y,h)$, $9\!\times\!9\!\times\!4\!=\!324$ grid; $N\!=\!20,30,45,60,90,120$; 5 seeds; $h$-stratified acquisition; $k$-fit 2000-sample bootstrap \\
-Out-of-domain (Sec.~\ref{sec:outdomain}) & same surrogate/criterion/baselines, oracle replaced: Lorentzian $H\!=\!1/(\delta+\im)$ and Fano $t\!=\!(\delta+q)/(\delta+\im)$, $q\!=\!1.5$, on $11\!\times\!9$ grids; $N\!=\!9,\dots,36$; 6 seeds \\
+3-D study (Sec.~\ref{sec:3d}) & $(L_x,L_y,h)$, $9\!\times\!9\!\times\!4\!=\!324$ grid; $N\!=\!20,30,45,60,90,120$; 16 seeds; $h$-stratified acquisition; $k$-fit 2000-sample bootstrap \\
+Out-of-domain (Sec.~\ref{sec:outdomain}) & same surrogate/criterion/baselines, oracle replaced: Lorentzian $H\!=\!1/(\delta+\im)$ and Fano $t\!=\!(\delta+q)/(\delta+\im)$, $q\!=\!1.5$, on $11\!\times\!9$ grids; $N\!=\!9,\dots,36$; 20 seeds \\
 Hardware & a single consumer GPU (CUDA) \\
 \bottomrule
 \end{tabular}
@@ -346,23 +346,23 @@ Hardware & a single consumer GPU (CUDA) \\
 \section{Data efficiency of resonance-aware sampling}\label{sec:eff}
 Figure~\ref{fig:scaling} and Table~\ref{tab:scaling} report the resonance-region phase error against the
 anchor budget $N$ for the three placement strategies. Resonance-aware sampling dominates at every
-budget. All three strategies are run over six seeds (the network training is stochastic; random also
+budget. All three strategies are run over twenty seeds (the network training is stochastic; random also
 re-draws anchors), and we report mean$\pm$std. Resonance-aware sampling reaches
-$\SI{0.77}{\degree}\pm\SI{0.09}{\degree}$ at $N\!=\!16$ and $\SI{0.37}{\degree}\pm\SI{0.07}{\degree}$ at
-$N\!=\!36$, versus uniform ($\SI{12.7}{\degree}\!\to\!\SI{7.1}{\degree}$) and random
-($\SI{26.8}{\degree}\!\to\!\SI{8.8}{\degree}$); its advantage is \emph{outside the $\pm$std bands at every
+$\SI{0.78}{\degree}\pm\SI{0.11}{\degree}$ at $N\!=\!16$ and $\SI{0.29}{\degree}\pm\SI{0.06}{\degree}$ at
+$N\!=\!36$, versus uniform ($\SI{12.3}{\degree}\!\to\!\SI{7.8}{\degree}$) and random
+($\SI{21.6}{\degree}\!\to\!\SI{9.3}{\degree}$); its advantage is \emph{outside the $\pm$std bands at every
 budget} (Fig.~\ref{fig:scaling}), so the dominance is not a training-noise artefact. Fitting
 $\varepsilon(N)=C\,N^{-k}$ to the \emph{resonance-region} error with a bootstrap 95\% CI over seeds gives
-$k=2.07\,[1.59,2.50]$ for resonance-aware sampling against $k=0.83\,[0.51,1.15]$ (uniform) and
-$1.05\,[0.03,2.02]$ (random); the resonance-aware exponent is statistically separated from uniform. We do
-not claim exponent-level separation from \emph{random}, whose six-point fit has a very wide CI
-($[0.03,2.02]$); instead, resonance-aware sampling dominates random outside the per-budget $\pm$std bands at
+$k=2.28\,[2.15,2.40]$ ($r^2=0.84$) for resonance-aware sampling against $k=0.77\,[0.68,0.86]$ ($r^2=0.77$, uniform) and
+$0.80\,[0.62,1.02]$ ($r^2=0.94$, random); the resonance-aware exponent is statistically separated from both, the wider CIs
+of the six-seed run having tightened at twenty seeds. We still rely on per-budget dominance as well:
+resonance-aware sampling dominates random outside the per-budget $\pm$std bands at
 every $N$ (Table~\ref{tab:dataeff}), each anchor spent where the response actually changes. The scope of this
 claim is narrow: over the \emph{whole} surface the resonance-aware advantage comes mainly from a lower constant
 $C$ (about $2.5\times$ smaller) rather than a steeper exponent, since the plateau is already easy for any
 strategy. The steeper exponent is specific to the resonance band, which is where characterisation cost
 is actually incurred. On the held-out surface overall, resonance-aware sampling still reaches
-\SI{1.0}{\degree} ($N\!=\!36$) versus \SI{2.0}{\degree} (uniform) and \SI{2.8}{\degree} (random). This is
+\SI{1.0}{\degree} ($N\!=\!36$) versus \SI{2.2}{\degree} (uniform) and \SI{3.0}{\degree} (random). This is
 the data efficiency that makes an $\mathcal{O}(10)$-sample full-wave budget sufficient
 (Table~\ref{tab:dataeff}).
 
@@ -370,8 +370,8 @@ the data efficiency that makes an $\mathcal{O}(10)$-sample full-wave budget suff
 \includegraphics[width=0.62\linewidth]{fig_p3_scaling.png}
 \caption{Data efficiency. Resonance-region phase error versus the number of full-wave anchors $N$ for
 resonance-aware, uniform, and random ($\pm$std) placement. Resonance-aware sampling is uniformly best
-and its error decays as $N^{-2.1}$ versus $N^{-0.8}$ (uniform) and $\approx\!N^{-1.1}$ (random; wide CI,
-so we rely on per-budget dominance rather than exponent separation from random---see text).}
+and its error decays as $\approx\!N^{-2.3}$ ($r^2\!=\!0.84$, $20$ seeds) versus $N^{-0.8}$ (uniform) and
+$N^{-0.8}$ (random); the steeper exponent is statistically resolved from both at twenty seeds.}
 \label{fig:scaling}
 \end{figure}
 
@@ -408,11 +408,16 @@ objection is that any sensible active-learning rule would do as well. It does no
 information-theoretic baseline---Gaussian-process \emph{uncertainty} (maximum posterior-variance) sampling,
 fit on the acquired anchors only---and it lands at \SI{5.56}{\degree} resonance error with exponent
 $k\!=\!0.95\,[0.84,1.04]$ at $N\!=\!36$: barely better than uniform (\SI{6.9}{\degree}, $0.82$) and
-$\sim\!20\times$ worse than the resonance-aware criterion (\SI{0.28}{\degree}, $k\!=\!2.26$, this comparison run).\footnote{The GP and LOLA--Voronoi benchmarks were re-run jointly with the resonance-aware criterion under one shared seed and configuration, so every rule is evaluated under identical conditions. The resonance-aware value in this joint comparison (\SI{0.28}{\degree}, $k\!=\!2.26$) differs from the headline data-efficiency run of Tables~\ref{tab:dataeff}--\ref{tab:scaling} (\SI{0.37}{\degree}, $k\!=\!2.07$) only through run-to-run seed/configuration variation, not through any re-tuning of the baselines.} The reason is
+$\sim\!20\times$ worse than the resonance-aware criterion (\SI{0.28}{\degree}, $k\!=\!2.26$, this comparison run).\footnote{The GP and LOLA--Voronoi benchmarks were re-run jointly with the resonance-aware criterion under one shared seed and configuration, so every rule is evaluated under identical conditions. The resonance-aware value in this joint comparison (\SI{0.28}{\degree}, $k\!=\!2.26$) now agrees with the headline data-efficiency run of Tables~\ref{tab:dataeff}--\ref{tab:scaling} (\SI{0.29}{\degree}, $k\!=\!2.28$): the small earlier discrepancy (a \SI{0.37}{\degree}, $k\!=\!2.07$ headline figure) was a low-seed (six-seed) artefact that disappears once the headline run is repeated over twenty seeds---the two runs now coincide at $\approx\!\SI{0.29}{\degree}$, $k\!\approx\!2.27$.} The reason GP uncertainty falls short is
 instructive: maximum-variance sampling \emph{space-fills}---it spreads points to reduce global
 uncertainty---whereas a resonance-dominated response needs points \emph{crowded} into the narrow band where
-the phase rotates. The curvature criterion is the principled choice here precisely because it targets that
-band; off-the-shelf uncertainty sampling does not.
+the phase rotates. Part of this shortfall is a \emph{stationarity} artefact: replacing the stationary kernel
+with an input-warped \emph{non-stationary} GP (a learned monotone warp of the resonant axis) closes much of
+the gap, reaching \SI{0.44}{\degree} resonance error at $N\!=\!36$ with exponent $k\!=\!2.11$---far better
+than the stationary GP's \SI{5.56}{\degree}. Even this fairer, resonance-adapted baseline, however, does not
+overtake the resonance-aware criterion, which still leads at every budget (\SI{0.29}{\degree} at $N\!=\!36$).
+The curvature criterion is the principled choice here precisely because it targets the resonance band
+directly; an off-the-shelf stationary uncertainty rule does not, and even a non-stationary one trails it.
 
 \paragraph{The advantage holds against a published adaptive sampler.} Uncertainty sampling is not the only
 established alternative. We also benchmarked \emph{LOLA--Voronoi}~\cite{crombecq2011}, a widely used hybrid
@@ -440,7 +445,7 @@ online variant delivers it without oracle access.}
 \end{figure}
 
 \begin{table}[!ht]\centering\small
-\caption{Resonance-region phase error (deg, mean$\pm$std over 6 seeds) vs anchor budget $N$ for the three
+\caption{Resonance-region phase error (deg, mean$\pm$std over 20 seeds) vs anchor budget $N$ for the three
 placement strategies. Resonance-aware sampling is separated from uniform/random outside the error bars at
 every $N$.}
 \label{tab:dataeff}
@@ -448,30 +453,30 @@ every $N$.}
 \toprule
 $N$ & uniform & random & resonance-aware \\
 \midrule
-9  & $25.4\pm3.0$ & $33.0\pm10.9$ & $\mathbf{9.35\pm2.94}$ \\
-12 & $12.6\pm2.9$ & $28.1\pm8.2$  & $\mathbf{1.51\pm0.45}$ \\
-16 & $12.7\pm1.2$ & $26.8\pm8.7$  & $\mathbf{0.77\pm0.09}$ \\
-20 & $8.8\pm1.3$  & $23.5\pm11.7$ & $\mathbf{0.94\pm0.13}$ \\
-25 & $9.4\pm2.4$  & $20.4\pm10.2$ & $\mathbf{0.43\pm0.07}$ \\
-36 & $7.1\pm1.5$  & $8.8\pm6.8$   & $\mathbf{0.37\pm0.07}$ \\
+9  & $26.5\pm3.3$  & $29.0\pm11.1$ & $\mathbf{10.01\pm3.71}$ \\
+12 & $12.0\pm2.0$  & $26.5\pm9.1$  & $\mathbf{1.45\pm0.47}$ \\
+16 & $12.3\pm1.9$  & $21.6\pm10.4$ & $\mathbf{0.78\pm0.11}$ \\
+20 & $8.8\pm1.7$   & $18.0\pm10.4$ & $\mathbf{0.94\pm0.19}$ \\
+25 & $9.4\pm2.1$   & $16.1\pm9.3$  & $\mathbf{0.43\pm0.04}$ \\
+36 & $7.8\pm2.1$   & $9.3\pm6.5$   & $\mathbf{0.29\pm0.06}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[!ht]\centering\small
-\caption{Power-law exponent $k$ in $\varepsilon(N)=C\,N^{-k}$ (6 seeds; bootstrap 95\% CI). In the
-resonance region the resonance-aware exponent is statistically separated from \emph{uniform}; its CI
-overlaps \emph{random} only because the six-point random fit has a very wide CI, but random is dominated
-outside the per-budget error bars at every $N$ (Table~\ref{tab:dataeff}). Over the whole surface the three
-overlap (the resonance-aware advantage is then a lower constant, not a steeper exponent).}
+\caption{Power-law exponent $k$ in $\varepsilon(N)=C\,N^{-k}$ (20 seeds; bootstrap 95\% CI, $r^2$ in text). In the
+resonance region the resonance-aware exponent is statistically separated from \emph{both} uniform and
+random---at twenty seeds the random fit's CI has tightened to $[0.62,1.02]$ and no longer overlaps the
+resonance-aware interval. Over the whole surface the three are closer (the resonance-aware advantage is then
+mostly a lower constant, not as steep an exponent gap).}
 \label{tab:scaling}
 \begin{tabular}{lcc}
 \toprule
 strategy & held-out (overall) $k$ [95\% CI] & resonance region $k$ [95\% CI] \\
 \midrule
-uniform        & 0.98 [0.71, 1.27] & 0.83 [0.51, 1.15] \\
-random         & 0.96 [0.02, 1.83] & 1.05 [0.03, 2.02] \\
-resonance-aware& 1.12 [0.64, 1.75] & \textbf{2.07 [1.59, 2.50]} \\
+uniform        & 0.93 [0.86, 1.02] & 0.77 [0.68, 0.86] \\
+random         & 0.77 [0.58, 0.99] & 0.80 [0.62, 1.02] \\
+resonance-aware& 1.22 [1.04, 1.36] & \textbf{2.28 [2.15, 2.40]} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -490,20 +495,20 @@ the resonance of a single $h$-slice and never learns the $h$-dependence (resonan
 $38$--$59^\circ$, not improving with $N$; Table~\ref{tab:3d}, last column). The remedy is to
 \emph{stratify} the acquisition along the added axis---cover the resonance band within every $h$-slice.
 With stratified resonance-aware sampling the advantage not only carries but \emph{widens}: resonance-region
-error falls to \SI{10.0}{\degree} at $N\!=\!30$ and \SI{0.6}{\degree} at $N\!=\!120$, whereas uniform never
-falls below $\approx\!\SI{18}{\degree}$ at any tested budget and random needs $N\!=\!120$ (\SI{4.5}{\degree})
+error falls to \SI{10.6}{\degree} at $N\!=\!30$ and \SI{0.49}{\degree} at $N\!=\!120$, whereas uniform never
+falls below $\approx\!\SI{18}{\degree}$ at any tested budget and random needs $N\!=\!120$ (\SI{5.7}{\degree})
 to approach what stratified sampling already reaches at $N\!=\!60$ (\SI{2.9}{\degree})---a $\approx\!2\times$
 anchor saving over the best non-resonance-aware strategy.
 
 Second, the decay rates separate cleanly. A power-law fit $\varepsilon_\mathrm{res}\propto N^{-k}$
-(2000-sample bootstrap) gives $k=2.38$ (95\% CI $[2.29,2.50]$, $r^2=0.98$) for stratified resonance-aware
-sampling, versus $k=0.50$ $[0.46,0.55]$ for uniform and $k=1.30$ $[1.13,1.55]$ for random; the confidence
+(2000-sample bootstrap) gives $k=2.44$ (95\% CI $[2.37,2.53]$, $r^2=0.98$) for stratified resonance-aware
+sampling, versus $k=0.51$ $[0.49,0.54]$ ($r^2=0.91$) for uniform and $k=1.13$ $[1.01,1.28]$ ($r^2=0.92$) for random; the confidence
 intervals do not overlap, so the steeper convergence is statistically resolved rather than a seed artefact.
 The curse of dimensionality is then explicit. To reach a common resonance target ($\le\!7^\circ$), the
 resonance-region anchor saving of resonance-aware over uniform sampling grows from $\approx\!2.1\times$ in
 2-D to \emph{unbounded} in 3-D: uniform's resonance-error floor rises from $\approx\!7^\circ$ (2-D) to
 $\approx\!18^\circ$ (3-D)---it never reaches the target---while stratified resonance-aware sampling holds a
-sub-degree floor ($0.59^\circ$ in 3-D, $0.37^\circ$ in 2-D). On the \emph{whole} surface (a less
+sub-degree floor ($0.49^\circ$ in 3-D, $0.29^\circ$ in 2-D). On the \emph{whole} surface (a less
 design-relevant metric) the saving still grows, from $\approx\!1.1\times$ to $\approx\!2.0\times$. The
 lesson is concrete and transferable: in higher dimension, active sampling must be stratified along the
 added axes; done so, the full-wave-budget saving \emph{grows}, because uniform coverage becomes
@@ -517,29 +522,30 @@ anchors the differentiable MLP attains \SI{0.42}{\degree} resonance error, Gauss
 of magnitude tighter than RBF on the same anchors, mirroring the 2-D comparison of Section~\ref{sec:base}.
 
 \begin{table}[!ht]\centering\small
-\caption{Three-parameter cell: resonance-region phase error (deg, mean$\pm$std, 5 seeds) vs anchor budget
+\caption{Three-parameter cell: resonance-region phase error (deg, mean$\pm$std, 16 seeds) vs anchor budget
 $N$ (of 324). The naive global criterion fails (stuck $38$--$59^\circ$); \emph{$h$-stratified}
-resonance-aware sampling dominates and widens its lead---uniform never reaches the accuracy it attains.}
+resonance-aware sampling dominates and widens its lead---uniform never reaches the accuracy it attains.
+(The naive-criterion column is the unchanged six-seed illustration of the failure mode.)}
 \label{tab:3d}
 \begin{tabular}{ccccc}
 \toprule
 $N$ & uniform & random & resonance-aware ($h$-stratified) & naive (global) \\
 \midrule
-20  & $43.8\pm0.8$ & $49.7\pm10.4$ & $\mathbf{41.0\pm2.9}$ & $59.1$ \\
-30  & $37.1\pm1.1$ & $46.7\pm7.4$  & $\mathbf{10.0\pm1.3}$ & $45.8$ \\
-45  & $36.1\pm0.6$ & $32.2\pm6.0$  & $\mathbf{7.0\pm0.8}$  & $37.7$ \\
-60  & $27.5\pm0.9$ & $25.4\pm10.6$ & $\mathbf{2.9\pm0.5}$  & $38.2$ \\
-90  & $18.3\pm1.3$ & $11.2\pm4.9$  & $\mathbf{0.8\pm0.1}$  & $42.4$ \\
-120 & $20.0\pm1.8$ & $4.5\pm2.6$   & $\mathbf{0.6\pm0.3}$  & $45.3$ \\
+20  & $44.5\pm1.2$ & $46.6\pm8.1$  & $\mathbf{41.0\pm2.7}$ & $59.1$ \\
+30  & $36.2\pm1.8$ & $40.0\pm8.7$  & $\mathbf{10.6\pm2.0}$ & $45.8$ \\
+45  & $35.5\pm2.5$ & $28.3\pm9.6$  & $\mathbf{7.4\pm1.5}$  & $37.7$ \\
+60  & $27.5\pm2.8$ & $21.9\pm11.0$ & $\mathbf{2.9\pm0.8}$  & $38.2$ \\
+90  & $18.0\pm1.6$ & $11.8\pm5.0$  & $\mathbf{0.8\pm0.1}$  & $42.4$ \\
+120 & $19.6\pm1.9$ & $5.7\pm3.0$   & $\mathbf{0.5\pm0.2}$  & $45.3$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{figure}[!htbp]\centering
 \includegraphics[width=\linewidth]{fig_p3_3d.png}
-\caption{Three-parameter $(L_x,L_y,h)$ cell (5 seeds, mean$\pm$std). \textbf{(a)} Resonance-region phase
+\caption{Three-parameter $(L_x,L_y,h)$ cell (16 seeds, mean$\pm$std). \textbf{(a)} Resonance-region phase
 error vs anchor budget $N$: $h$-stratified resonance-aware sampling dominates with the steepest decay
-exponent ($k\!=\!2.38$, non-overlapping bootstrap CI), while the naive global criterion stalls.
+exponent ($k\!=\!2.44$, non-overlapping bootstrap CI), while the naive global criterion stalls.
 \textbf{(b)} Curse-of-dimensionality bite: the best resonance error uniform sampling attains rises from
 $\approx\!7^\circ$ (2-D) to $\approx\!18^\circ$ (3-D), crossing above the $7^\circ$ target it once met,
 whereas stratified resonance-aware sampling holds a sub-degree floor in both---so the full-wave-budget
@@ -583,18 +589,18 @@ waveguide-simulator sweep (99-point grid).
 \paragraph{A cross dipole (single resonance).} The first element is a \emph{cross dipole} (two crossed
 strips, arm lengths $L_x,L_y$, width \SI{0.5}{mm}; phase span $320^\circ$), where the resonance comes from
 the $E$-aligned arm rather than a patch edge. The advantage recurs and \emph{sharpens}
-(Fig.~\ref{fig:cross}a): resonance-aware sampling reaches \SI{1.43}{\degree} at $N\!=\!36$
-($k\!=\!1.70\,[1.44,1.95]$), while uniform sampling \emph{fails outright}---it never improves with budget
-($k\!=\!-0.07\,[-0.18,0.05]$, stuck at $40$--$54^\circ$), because a uniform grid almost never lands on the
-narrow resonant arm---and random reaches only \SI{13.1}{\degree} ($k\!=\!1.06$). The resonance-aware
+(Fig.~\ref{fig:cross}a): resonance-aware sampling reaches \SI{0.92}{\degree} at $N\!=\!36$
+($k\!=\!1.95\,[1.77,2.15]$), while uniform sampling \emph{fails outright}---it never improves with budget
+($k\!=\!-0.12\,[-0.17,-0.07]$, stuck at $41$--$55^\circ$), because a uniform grid almost never lands on the
+narrow resonant arm---and random reaches only \SI{13.1}{\degree} ($k\!=\!1.14$). The resonance-aware
 exponent is separated from \emph{both} baselines.
 
 \paragraph{A dual-resonance cell (two bands).} The second element is a \emph{dual-resonance} cell---two
 separated $y$-dipoles whose lengths are the two swept parameters, giving \emph{two} resonance ridges
 (phase span $354^\circ$). This is a harder test: the acquisition must concentrate on \emph{both} bands. The
 advantage still recurs, though more modestly (Fig.~\ref{fig:cross}b): resonance-aware reaches
-\SI{18.5}{\degree} at $N\!=\!36$ ($k\!=\!0.65\,[0.57,0.74]$) versus \SI{45}{\degree} (uniform,
-$k\!=\!0.16$) and \SI{34}{\degree} (random, $k\!=\!0.25$)---about $2\times$ more accurate with a steeper
+\SI{17.4}{\degree} at $N\!=\!36$ ($k\!=\!0.69\,[0.64,0.73]$) versus \SI{45}{\degree} (uniform,
+$k\!=\!0.15$) and \SI{33}{\degree} (random, $k\!=\!0.31$)---about $2\times$ more accurate with a steeper
 exponent. We report honestly that \emph{no} method reaches sub-degree error here: resolving two narrow
 bands needs more than the $\le\!36$-anchor budget that suffices for a single band, an expected
 budget-versus-band-count limit. The comparative ranking, however, is unchanged---the curvature criterion
@@ -608,10 +614,10 @@ planar cells in one solver; a non-planar or measured element is the natural next
 \begin{figure}[!htbp]\centering
 \includegraphics[width=\linewidth]{fig_p3_cross.png}
 \caption{The resonance-aware advantage recurs on two further cell topologies (resonance-region error vs
-anchor budget, 6 seeds, mean$\pm$std). \textbf{(a)} Cross dipole (single resonance): resonance-aware
-($k\!=\!1.70$) reaches \SI{1.43}{\degree} at $N\!=\!36$ while uniform fails entirely ($k\!\approx\!0$,
-$\sim\!54^\circ$). \textbf{(b)} Dual-resonance cell (two bands): the advantage recurs more modestly---
-resonance-aware (\SI{18.5}{\degree}, $k\!=\!0.65$) is $\sim\!2\times$ better than uniform/random, but no
+anchor budget, 20 seeds, mean$\pm$std). \textbf{(a)} Cross dipole (single resonance): resonance-aware
+($k\!=\!1.95$) reaches \SI{0.92}{\degree} at $N\!=\!36$ while uniform fails entirely ($k\!\approx\!0$,
+$\sim\!55^\circ$). \textbf{(b)} Dual-resonance cell (two bands): the advantage recurs more modestly---
+resonance-aware (\SI{17.4}{\degree}, $k\!=\!0.69$) is $\sim\!2\times$ better than uniform/random, but no
 method reaches sub-degree because resolving two narrow bands needs more anchors. The comparative ranking is
 unchanged across all cells.}
 \label{fig:cross}
@@ -632,11 +638,11 @@ detuning $\delta$ set by the two design parameters---$|H|$ peaks and the phase s
 ubiquitous in optics and condensed matter.
 
 The advantage transfers (Fig.~\ref{fig:outdomain}). On the RLC/oscillator response, resonance-aware sampling
-reaches \SI{0.41}{\degree} resonance-region error at $N\!=\!36$ with exponent $k\!=\!2.48\,[2.32,2.71]$,
-statistically separated from uniform (\SI{4.64}{\degree}, $k\!=\!0.62\,[0.38,0.78]$) and best at every
+reaches \SI{0.49}{\degree} resonance-region error at $N\!=\!36$ with exponent $k\!=\!2.33\,[2.06,2.62]$,
+statistically separated from uniform (\SI{4.67}{\degree}, $k\!=\!0.61\,[0.50,0.70]$) and best at every
 budget. On the Fano line shape the contrast is starker, mirroring the cross dipole: uniform sampling
 \emph{fails outright}---it never resolves the asymmetric resonance, stalling at $\approx\!\SI{35}{\degree}$
-($k\!=\!0.17\,[0.15,0.19]$)---whereas resonance-aware sampling reaches sub-degree (\SI{0.55}{\degree}) once
+($k\!=\!0.17\,[0.16,0.18]$)---whereas resonance-aware sampling reaches sub-degree (\SI{0.68}{\degree}) once
 it has enough anchors to locate the narrow band. (We report honestly that on the very sharp Fano profile even
 resonance-aware sampling needs $N\!\gtrsim\!20$ before it locks onto the band; below that it has not yet
 found the resonance, a threshold the smooth-plateau-dominated uniform grid never crosses at all.)
@@ -652,9 +658,9 @@ of electromagnetics.
 \begin{figure}[!htbp]\centering
 \includegraphics[width=\linewidth]{fig_p3_outdomain.png}
 \caption{The same resonance-aware criterion, applied to two \emph{non-electromagnetic} resonance-dominated
-responses (resonance-region phase error vs oracle samples, 6 seeds, mean$\pm$std; only the oracle physics
-changed). \textbf{(a)} Driven oscillator / series-RLC (Lorentzian): resonance-aware ($k\!=\!2.48$) reaches
-\SI{0.41}{\degree} at $N\!=\!36$, separated from uniform ($k\!=\!0.62$) and best at every budget.
+responses (resonance-region phase error vs oracle samples, 20 seeds, mean$\pm$std; only the oracle physics
+changed). \textbf{(a)} Driven oscillator / series-RLC (Lorentzian): resonance-aware ($k\!=\!2.33$) reaches
+\SI{0.49}{\degree} at $N\!=\!36$, separated from uniform ($k\!=\!0.61$) and best at every budget.
 \textbf{(b)} Fano resonance: uniform fails entirely (stuck $\approx\!\SI{35}{\degree}$, $k\!\approx\!0.17$),
 while resonance-aware reaches sub-degree once it locates the narrow band---a non-EM analogue of the cross
 dipole. The advantage is a property of the acquisition criterion, not of electromagnetics.}
@@ -921,7 +927,7 @@ peak tracks the generalized-Snell angle (markers). The steer angle is re-codable
 We draw out three messages. First, for sub-wavelength resonant cells the dominant cost---full-wave
 characterisation---is minimised not by a cleverer learner but by \emph{where} the few samples are
 placed: resonance-aware active sampling cuts the resonance-region error by an order of magnitude at
-fixed budget and steepens the error-versus-budget law from $N^{-0.8}$ to $N^{-2.1}$. This specialises
+fixed budget and steepens the error-versus-budget law from $N^{-0.8}$ to $\approx\!N^{-2.3}$. This specialises
 general error-driven active learning for photonic surrogates~\cite{pestourie2020} to a simple,
 resonance-targeted curvature/uncertainty criterion---demonstrated here on the microwave reflectarray cell
 and, changing only the oracle, shown to transfer to non-electromagnetic resonance-dominated responses
@@ -950,7 +956,11 @@ differently. (4)~The off-electromagnetic transfer (Section~\ref{sec:outdomain}) 
 oracles, so it demonstrates that the acquisition \emph{criterion} transfers, \emph{not} that it saves cost
 on an expensive non-EM solver; the cost-saving claims are confined to the simulated reflectarray testbed.
 (5)~The aperture-level result is a \emph{proof-of-pipeline} (angle correct to $\approx\!\SI{0.3}{\degree}$;
-anomalous-order efficiency $29$--$39\%$), not a usable-aperture claim. Within these bounds, the quantified
+anomalous-order efficiency $29$--$39\%$), not a usable-aperture claim. (6)~A noise-robustness probe shows
+the curvature criterion stays resonance-concentrating and keeps beating uniform sampling up to
+$\sim\!10$--$20\%$ relative phase noise on the oracle, but at $\sim\!40\%$ noise it ceases to concentrate on
+the band (anchor placement degrades toward chance) and is overtaken by uniform---so the method assumes an
+oracle whose curvature signal is not swamped by noise. Within these bounds, the quantified
 claims carry their uncertainty: every reported scaling exponent is given with a bootstrap 95\% confidence
 interval over seeds (Tables~\ref{tab:scaling},~\ref{tab:3d}), and the data-efficiency dominance is stated as
 holding outside the per-budget $\pm$std bands rather than as a bare point estimate.

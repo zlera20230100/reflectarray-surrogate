@@ -16,7 +16,7 @@ LXf = Lx_ax[IX]; LYf = Ly_ax[IY]; PHf = ph[IY, IX]
 G = mg[IY, IX]*np.exp(1j*np.deg2rad(PHf)); REf, IMf = G.real, G.imag
 NALL = PHf.size; RES_LY = 2.8; res_mask = LYf <= RES_LY
 COORDS = S.norm_xy(LXf, LYf)
-BUD = (9, 12, 16, 20, 25, 36); N_SEEDS = 6; N_BOOT = 2000; RNG = np.random.default_rng(12345)
+BUD = (9, 12, 16, 20, 25, 36); N_SEEDS = int(os.environ.get('N_SEEDS', '6')); N_BOOT = 2000; RNG = np.random.default_rng(12345)
 print(f"cross grid {NALL} pts; phase span {PHf.max()-PHf.min():.0f} deg", flush=True)
 
 def _flat(iy, ix): return iy*NX+ix

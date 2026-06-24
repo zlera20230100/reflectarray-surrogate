@@ -21,7 +21,7 @@ NALL = LXf.size
 # fast-diagnostic switch: `python outdomain_scaling.py diag` uses cheap settings
 DIAG = (len(sys.argv) > 1 and sys.argv[1] == 'diag')
 BUD = (12, 36) if DIAG else (9, 12, 16, 20, 25, 36)
-N_SEEDS = 3 if DIAG else 6
+N_SEEDS = int(os.environ.get('N_SEEDS', str(3 if DIAG else 6)))
 ITERS = 3000 if DIAG else 20000
 N_BOOT = 500 if DIAG else 2000
 RNG = np.random.default_rng(12345)

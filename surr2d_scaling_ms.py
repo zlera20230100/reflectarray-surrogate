@@ -15,7 +15,7 @@ import surrogate2d as S   # reuse anchors + training + metrics + grid
 
 OUT_DIR = os.getcwd()
 BUDGETS = (9, 12, 16, 20, 25, 36)
-N_SEEDS = 6
+N_SEEDS = int(os.environ.get('N_SEEDS', '6'))
 N_BOOT = 2000
 RNG_BOOT = np.random.default_rng(12345)
 
@@ -155,7 +155,8 @@ def run():
           f'overlap with REA: {overlap(kr, krn)}')
 
     # save
-    out = os.path.join(OUT_DIR, 'surr2d_scaling_ms.npz')
+    out = os.path.join(OUT_DIR, 'surr2d_scaling_ms.npz' if N_SEEDS == 6
+                       else f'surr2d_scaling_ms_s{N_SEEDS}.npz')
     save = dict(N=Narr, n_seeds=N_SEEDS, n_boot=N_BOOT)
     keymap = {'uniform': 'uni', 'random': 'rnd', 'resonance-aware': 'rea'}
     for s in strategies:
