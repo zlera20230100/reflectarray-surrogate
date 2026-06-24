@@ -19,7 +19,7 @@ ax.plot(k,sm,'s--',color=ACC,lw=1.8,ms=5,label='train from scratch on $h{=}1.5$'
 ax.fill_between(k,np.maximum(sm-ss,1e-3),sm+ss,color=ACC,alpha=0.15,lw=0)
 ax.axhline(sm[-1],color='0.5',ls=':',lw=1.0)
 ax.annotate(f'scratch best ({sm[-1]:.1f}$^\\circ$, $k$=16);\nwarm reaches it at $k$=4',
-            xy=(9.5,sm[-1]),xytext=(9.5,12.5),ha='center',fontsize=8.2,color=GRN,
+            xy=(9.5,sm[-1]),xytext=(9.5,8.6),ha='center',va='top',fontsize=8.2,color=GRN,
             arrowprops=dict(arrowstyle='->',color=GRN,lw=0.9))
 ax.set_yscale('log'); ax.set_xticks(k); ax.set_xticklabels([int(x) for x in k])
 ax.set_xlabel('number of NEW full-wave anchors on the target substrate ($h{=}1.5$ mm)')
