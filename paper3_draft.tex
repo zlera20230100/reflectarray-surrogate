@@ -448,7 +448,7 @@ $N$ & uniform & random & resonance-aware \\
 \end{tabular}
 \end{table}
 
-\begin{table}[!htbp]\centering\small
+\begin{table}[H]\centering\small
 \caption{Power-law exponent $k$ in $\varepsilon(N)=C\,N^{-k}$ (6 seeds; bootstrap 95\% CI). In the
 resonance region the resonance-aware exponent is statistically separated from \emph{uniform}; its CI
 overlaps \emph{random} only because the six-point random fit has a very wide CI, but random is dominated
@@ -506,7 +506,7 @@ anchors the differentiable MLP attains \SI{0.42}{\degree} resonance error, Gauss
 \SI{0.58}{\degree}, and RBF interpolation \SI{4.93}{\degree}---the neural and GP surrogates remain an order
 of magnitude tighter than RBF on the same anchors, mirroring the 2-D comparison of Section~\ref{sec:base}.
 
-\begin{table}[!htbp]\centering\small
+\begin{table}[H]\centering\small
 \caption{Three-parameter cell: resonance-region phase error (deg, mean$\pm$std, 5 seeds) vs anchor budget
 $N$ (of 324). The naive global criterion fails (stuck $38$--$59^\circ$); \emph{$h$-stratified}
 resonance-aware sampling dominates and widens its lead---uniform never reaches the accuracy it attains.}
@@ -675,7 +675,7 @@ scale---so the neural surrogate is not a gratuitous choice: it is the model that
 resonance-aware anchors while still providing autodiff geometry gradients (Table~\ref{tab:baseline},
 Fig.~\ref{fig:baseline2}).
 
-\begin{table}[!htbp]\centering\small
+\begin{table}[H]\centering\small
 \caption{Held-out phase MAE (deg) vs the differentiable MLP, RBF interpolation, and Gaussian-process
 kriging, at matched anchor budgets. The MLP is best at every budget; the classical interpolants suffer
 the same clustered-anchor pathology as the SVR (kriging worst), justifying the neural surrogate.}
@@ -734,7 +734,7 @@ $-107$, the surrogate $-119$, and the coarse grid $-171$\,deg/mm). The moderate 
 grid therefore reflects the yardstick's truncation error, not surrogate inaccuracy; the inverse-design
 results below confirm the gradient drives optimisation.
 
-\begin{table}[!htbp]\centering\small
+\begin{table}[H]\centering\small
 \caption{Fine vs coarse full-wave gradient check in the resonance band. A dedicated $\pm\SI{0.1}{mm}$
 full-wave finite difference (fine, a finer-resolved reference) shows the coarse $0.4$-mm grid difference
 over-estimates $\partial\angle\Gamma/\partial L_y$, while the surrogate's autodiff gradient is much closer
@@ -787,7 +787,7 @@ not a confident wrong answer.}
 \label{fig:ood}
 \end{figure}
 
-\begin{table}[!htbp]\centering\small
+\begin{table}[H]\centering\small
 \caption{Two-parameter inverse design. Eight target reflections (phase and magnitude drawn from the
 achievable surface), the surrogate-solved geometry, and the openEMS-verified achieved values.}
 \label{tab:inverse}
