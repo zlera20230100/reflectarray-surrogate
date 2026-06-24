@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-# Online resonance-aware active sampling for the 2-D surrogate. Unlike the resonance-aware sampler in
-# surrogate2d.py, which scores curvature on the full 99-point reference, this acquisition reads the
-# full-wave phase/mag only at anchors it has already acquired.
-#
-# Query-by-committee acquisition: seed with the 4 corners, then at each step build two inverse-distance
-# interpolants of the complex reflection from the acquired anchors (power p=2 and p=8) and acquire the
-# un-acquired candidate of maximum disagreement |G_sharp - G_smooth|, repeating to budget N. The same MLP
-# is then trained on the acquired anchors and scored with the same metrics. Multi-seed, bootstrap 95% CI
-# on k. Compared to uniform / random / oracle resonance-aware.
+# Online resonance-aware active sampling for the 2-D surrogate. Reads full-wave phase/mag only at
+# already-acquired anchors (the surrogate2d.py sampler scores curvature on the full 99-point grid).
+# Query-by-committee: seed the 4 corners, then at each step build two inverse-distance interpolants
+# of the complex reflection (power p=2 and p=8) and acquire the candidate of maximum disagreement
+# |G_sharp - G_smooth|, to budget N. MLP trained on the acquired anchors, same metrics. Multi-seed,
+# bootstrap 95% CI on k. Compared to uniform / random / oracle resonance-aware.
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 import time
@@ -25,7 +22,7 @@ RE = S.RE_all; IM = S.IM_all                      # full-wave complex (queried o
 
 
 def online_resaware_anchors(N):
-    """Online curvature-seeking acquisition using ONLY acquired-anchor data."""
+    """Online curvature-seeking acquisition using only acquired-anchor data."""
     corners = [S._flat(0, 0), S._flat(0, S.NX - 1),
                S._flat(S.NY - 1, 0), S._flat(S.NY - 1, S.NX - 1)]
     chosen = list(dict.fromkeys(corners))[:N]

@@ -161,8 +161,8 @@ def run_mode(MODE):
         if MODE == 'hybrid':
             ld = data_loss(); loss = loss + l_phys + WDATA*ld
         elif MODE == 'adv':
-            # gradient-norm adaptive weighting (Wang gradient-pathologies): rescale the data term so
-            # its parameter-gradient magnitude matches the physics term's, so neither swamps the other.
+            # gradient-norm adaptive weighting: rescale the data term so its parameter-gradient
+            # magnitude matches the physics term's.
             ld = data_loss()
             if it == 1 or it % 200 == 0:
                 _ps = [p for p in net.parameters() if p.requires_grad]

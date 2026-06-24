@@ -368,7 +368,7 @@ def baseline_study(budgets=(9, 12, 16, 20, 25, 36), n_seeds=6):
             Ytr = np.stack([RE_all[idx], IM_all[idx]], axis=1)
             Xall = norm_xy(LX_all, LY_all)
 
-            # MLP surrogate (our torch model)
+            # MLP surrogate (torch model)
             model, _ = train_surrogate(LX_all[idx], LY_all[idx],
                                        RE_all[idx], IM_all[idx])
             ph_pred, _ = predict(model, LX_all, LY_all)
@@ -384,7 +384,7 @@ def baseline_study(budgets=(9, 12, 16, 20, 25, 36), n_seeds=6):
             re_p = svr_re.predict(Xall); im_p = svr_im.predict(Xall)
             svr_mae = phase_mae_from_complex(re_p[held], im_p[held], held)
 
-            # small ANN (sklearn MLPRegressor) - "published-style"
+            # small ANN (sklearn MLPRegressor)
             ann = MLPRegressor(hidden_layer_sizes=(64, 64), activation='tanh',
                                solver='lbfgs', max_iter=5000,
                                random_state=0).fit(Xtr, Ytr)
@@ -498,11 +498,9 @@ def bilinear_ref(Lx, Ly):
 
 def inverse_design(model, n_targets=8):
     print('\n=== 5) 2-D INVERSE DESIGN DEMO ===')
-    # Pick targets spanning the achievable complex surface. Targets must be
-    # genuinely achievable, so for each target phase we read the corresponding
-    # achievable |Gamma| directly off the full-wave surface (nearest grid point
-    # in phase), rather than imposing a single fixed |Gamma| that the surface
-    # cannot deliver across the whole phase swing.
+    # Targets span the achievable complex surface: for each target phase, read
+    # the achievable |Gamma| off the full-wave surface at the nearest grid point
+    # in phase, rather than fixing a single |Gamma|.
     pmin, pmax = PH_all.min(), PH_all.max()
     margin = 0.05 * (pmax - pmin)
     ph_targets = np.linspace(pmin + margin, pmax - margin, n_targets)

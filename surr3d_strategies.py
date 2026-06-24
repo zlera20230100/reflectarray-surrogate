@@ -1,11 +1,8 @@
 """3-D anchor strategies and a head-to-head comparison.
 
-The greedy curvature strategy (resonance_aware_anchors in surrogate3d.py) chases
-per-slice unwrap artifacts in 3-D and abandons whole (Lx,h) regions, so it can
-underperform uniform/random. This module builds a balanced resonance-aware
-sampler: a space-filling farthest-point base in normalized (Lx,Ly,h), then
-curvature-weighted greedy refinement on the circular phase residual (wrap-safe),
-with a coverage penalty so anchors do not collapse onto a single column.
+Balanced resonance-aware sampler: a space-filling farthest-point base in
+normalized (Lx,Ly,h), then curvature-weighted greedy refinement on the circular
+phase residual (wrap-safe), with a coverage penalty.
 """
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
@@ -52,11 +49,10 @@ def _circ_curvature():
 def resonance_aware_balanced(N, base_frac=0.5):
     """Balanced resonance-aware sampler.
 
-    base = ceil(base_frac*N) space-filling farthest-point anchors (from the 8
-    box corners) -> guarantees coverage of all (Lx,Ly,h) regions.
-    remaining = curvature-weighted farthest-point: pick the candidate maximising
-    curvature_weight * (min distance to chosen) -> crowds the high-curvature
-    resonance band WITHOUT collapsing (distance term keeps spread).
+    base = ceil(base_frac*N) space-filling farthest-point anchors from the 8 box
+    corners. remaining = curvature-weighted farthest-point: pick the candidate
+    maximising curvature_weight * (min distance to chosen); the distance term
+    keeps the high-curvature picks spread out.
     """
     coords = S.norm_xyh(S.LX_all, S.LY_all, S.H_all)     # (324,3)
     curv = _circ_curvature().ravel()

@@ -1,9 +1,8 @@
 """Multi-seed scaling-law experiment for the 2-D surrogate.
 
-Reuses anchor selection and training from surrogate2d.py. For each strategy
-(uniform / random / resonance-aware) and budget N, trains the MLP over >=6 seeds
-(seed varies MLP init/training; for 'random' the anchor draw also varies). Reports
-mean+-std for each strategy and fits err = C*N^-k with a bootstrap 95% CI on k.
+Anchors, training and metrics come from surrogate2d.py. For each strategy
+(uniform / random / resonance-aware) and budget N, trains the MLP over >=6 seeds.
+Reports mean+-std and fits err = C*N^-k with a bootstrap 95% CI on k.
 """
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
@@ -21,8 +20,8 @@ RNG_BOOT = np.random.default_rng(12345)
 
 
 def train_eval(idx, seed):
-    """Train one surrogate on anchor indices idx with the given seed, return
-    (heldout circular phase err, resonance-region held-out phase err)."""
+    """Train on anchor indices idx with the given seed; return
+    (heldout phase err, resonance-region held-out phase err)."""
     model, _ = S.train_surrogate(S.LX_all[idx], S.LY_all[idx],
                                  S.RE_all[idx], S.IM_all[idx], seed=seed)
     m = S.metrics(model, set(idx))
@@ -40,8 +39,8 @@ def run():
     res = {s: {N: [] for N in BUDGETS} for s in strategies}
 
     for N in BUDGETS:
-        # uniform & resonance-aware: anchors are deterministic in N; seed varies
-        # only the MLP init/training. random: anchor draw varies by seed too.
+        # uniform & resonance-aware anchors are deterministic in N; seed varies
+        # the MLP init/training. random anchor draw varies by seed too.
         uni_idx = S.uniform_anchors(N)
         rea_idx = S.resonance_aware_anchors(N)
         for s in range(N_SEEDS):
@@ -171,7 +170,7 @@ def run():
         save[f'{p}_k_all_CI'] = fits[s]['k_all_CI']
         save[f'{p}_r2_res'] = fits[s]['r2_res']
         save[f'{p}_r2_all'] = fits[s]['r2_all']
-        # raw per-seed matrices for full transparency
+        # raw per-seed matrices
         save[f'{p}_res_raw'] = np.array([res[s][N] for N in BUDGETS])
         save[f'{p}_held_raw'] = np.array([held[s][N] for N in BUDGETS])
     np.savez(out, **save)

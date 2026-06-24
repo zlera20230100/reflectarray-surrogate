@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # Applies the resonance-aware curvature acquisition criterion (Eq. 3) to two non-EM two-parameter
-# resonant systems, using the same pipeline (Surrogate2D + train_surrogate + curv/uniform/random anchors
-# + bootstrap exponent) as the patch study:
+# resonant systems, using the same pipeline (Surrogate2D + train_surrogate + curv/uniform/random
+# anchors + bootstrap exponent) as the patch study:
 #   (A) a driven damped oscillator / series-RLC transfer function H(p1,p2) at a fixed probe;
 #   (B) a Fano resonance complex line shape t(p1,p2).
-# Only the reference response changes; the criterion, surrogate, metric and statistics are unchanged, and
-# the parameters live in the same [2,6] box so S.norm_xy is reused.
+# Only the reference response changes; criterion, surrogate, metric and statistics are unchanged.
+# Parameters live in the same [2,6] box so S.norm_xy is reused.
 import os, sys
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 import time, numpy as np
@@ -30,24 +30,22 @@ RNG = np.random.default_rng(12345)
 def build_ref(kind):
     """Return (phase_grid(NY,NX) deg, mag_grid(NY,NX) in [0,1], res_mask(NALL,)) for a non-EM resonance.
 
-    Both systems sit in the regime the method targets: a sharp, high-Q resonance localised in a narrow
-    band near the low edge of coord 1, leaving a large smooth plateau (like the patch's phase rotation at
-    small Ly). The reduced detuning is delta = (t1 - t1c)/hw with hw shrinking along coord 2 (sharper
-    toward small p2), so the band sharpens across the surface as the patch resonance does when Lx narrows.
+    Both systems have a sharp high-Q resonance in a narrow band near the low edge of coord 1, with a
+    smooth plateau above. Reduced detuning delta = (t1 - t1c)/hw; hw shrinks along coord 2, so the band
+    sharpens toward small p2.
     """
     t1 = (Ly_ax - 2.0) / 4.0                      # rows  in [0,1] -> resonance-crossing coordinate
     t2 = (Lx_ax - 2.0) / 4.0                      # cols  in [0,1] -> sharpness (high-Q at small p2)
     T1, T2 = np.meshgrid(t1, t2, indexing='ij')   # (NY,NX)
     t1c = 0.16                                     # resonance near the low edge, leaving a plateau above
     if kind == 'rlc':
-        # Driven damped oscillator / series-RLC response (Lorentzian): H = 1/(delta + j), |H| peaks at
-        # resonance, phase swings 180 deg through it. delta = reduced detuning (drive vs natural freq).
+        # Series-RLC / damped-oscillator Lorentzian: H = 1/(delta + j). delta = reduced detuning.
         hw = 0.06 + 0.08 * T2                      # high-Q (hw small) at small p2; broader at large p2
         delta = (T1 - t1c) / hw
         H = 1.0 / (delta + 1j)
-        res = np.abs(delta) <= 4.0                 # resonance band: within +-4 reduced linewidths
+        res = np.abs(delta) <= 4.0                 # band: within +-4 reduced linewidths
     elif kind == 'fano':
-        # Fano complex line shape t = (delta + q)/(delta + j), asymmetry q (optics / condensed matter).
+        # Fano line shape t = (delta + q)/(delta + j), asymmetry q.
         hw = 0.025 + 0.060 * T2
         q = 1.5
         delta = (T1 - t1c) / hw

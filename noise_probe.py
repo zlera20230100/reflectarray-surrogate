@@ -1,29 +1,22 @@
 # -*- coding: utf-8 -*-
-# Noise-robustness probe for the resonance-aware curvature acquisition (addresses a reviewer concern
-# that the discrete second-difference / curvature criterion may break on NOISY oracles, where the
-# curvature is dominated by observation noise).
+# Noise-robustness probe for the resonance-aware curvature acquisition.
+# Uses the RLC Lorentzian oracle from outdomain_scaling.build_ref('rlc'), adds
+# zero-mean Gaussian noise to the observed phase at several relative levels
+# (std = 0..40% of phase swing). At each level, fixed budget N=20:
+#   (a) curvature acquisition placement on the noisy phase; measure fraction of
+#       anchors landing in the resonance band;
+#   (b) resonance-region phase error vs uniform sampling.
+# Averaged over seeds. Saves noise_probe.npz and prints a table.
 #
-# We take ONE analytic oracle (the cleanest: the driven-oscillator / series-RLC Lorentzian line shape
-# from outdomain_scaling.build_ref('rlc')), add zero-mean Gaussian noise to the OBSERVED phase at
-# several relative levels (std = 0,1,2,5,10% of the phase swing), and at each level:
-#   (a) run the curvature acquisition whose placement uses the NOISY phase, and measure the fraction
-#       of selected anchors that land in the resonance band;
-#   (b) measure the resulting resonance-region phase error vs UNIFORM sampling at a fixed budget N=20.
-# Averaged over several seeds. Saves noise_probe.npz and prints a table.
-#
-# CPU / numpy only. We reuse the EXACT analytic oracle and the EXACT curvature acquisition score from
-# outdomain_scaling.py. To keep the study lightweight and to isolate the *placement criterion* (which
-# is what the reviewer questions) from the heavy NN surrogate, the resonance-region error is measured
-# with a lightweight, deterministic numpy reconstruction (inverse-distance interpolation of the complex
-# response from the chosen anchors to the full grid) -- the same IDW machinery the curvature acquisition
-# itself uses for its interpolated residual. This makes the error a clean function of WHERE anchors are
-# placed, so any degradation reported here is attributable to the noisy placement, not to NN training noise.
+# CPU / numpy only. Reuses the oracle and curvature score from outdomain_scaling.py.
+# Error is measured with a deterministic IDW numpy reconstruction (the same IDW used
+# by the curvature score) so it depends only on anchor placement, not NN training.
 
 import os, sys
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 import numpy as np
 
-# ---- grid + oracle, identical setup to outdomain_scaling.py --------------------------------------
+# ---- grid + oracle, same setup as outdomain_scaling.py -------------------------------------------
 NY, NX = 11, 9
 Ly_ax = np.linspace(2.0, 6.0, NY)
 Lx_ax = np.linspace(2.0, 6.0, NX)
@@ -48,7 +41,7 @@ COORDS = norm_xy(LXf, LYf)
 
 
 def build_ref_rlc():
-    """EXACT RLC Lorentzian oracle from outdomain_scaling.build_ref('rlc')."""
+    """RLC Lorentzian oracle from outdomain_scaling.build_ref('rlc')."""
     t1 = (Ly_ax - 2.0) / 4.0
     t2 = (Lx_ax - 2.0) / 4.0
     T1, T2 = np.meshgrid(t1, t2, indexing='ij')
@@ -68,7 +61,7 @@ def _flat(iy, ix):
     return iy * NX + ix
 
 
-# ---- anchor selectors (uniform identical to outdomain_scaling; curv reused verbatim) -------------
+# ---- anchor selectors (uniform + curvature, from outdomain_scaling) ------------------------------
 def uniform_anchors(N):
     ny = max(2, min(NY, int(round(np.sqrt(N * NY / NX))))); nx = max(2, min(NX, int(np.ceil(N / ny))))
     iy = np.unique(np.round(np.linspace(0, NY - 1, ny)).astype(int)); ix = np.unique(np.round(np.linspace(0, NX - 1, nx)).astype(int))
@@ -82,8 +75,8 @@ def uniform_anchors(N):
 
 
 def curv_anchors(N, ph):
-    """EXACT curvature acquisition from outdomain_scaling.curv_anchors. `ph` is the (NY,NX) phase grid
-    the criterion sees -- here it will be the NOISY phase."""
+    """Curvature acquisition from outdomain_scaling.curv_anchors. `ph` is the (NY,NX)
+    phase grid the criterion sees (here, the noisy phase)."""
     uw = np.rad2deg(np.unwrap(np.deg2rad(ph), axis=0)); c = np.zeros_like(uw)
     c[1:-1, :] += np.abs(uw[:-2, :] - 2 * uw[1:-1, :] + uw[2:, :]); c[:, 1:-1] += np.abs(uw[:, :-2] - 2 * uw[:, 1:-1] + uw[:, 2:])
     c[0, :] = c[1, :]; c[-1, :] = c[-2, :]; c[:, 0] = c[:, 1]; c[:, -1] = c[:, -2]
@@ -98,8 +91,8 @@ def curv_anchors(N, ph):
 
 # ---- lightweight numpy reconstruction (IDW on complex response from anchors -> full grid) --------
 def idw_reconstruct(idx, REf, IMf, power=2.0):
-    """Inverse-distance-weighted interpolation of the complex response from anchor set -> full grid.
-    Returns predicted phase (deg) on every grid point. Anchors reproduce their own (noisy) value."""
+    """IDW interpolation of the complex response from anchors to the full grid.
+    Returns predicted phase (deg); anchors reproduce their own (noisy) value."""
     idx = np.asarray(idx)
     d2 = ((COORDS[:, None, :] - COORDS[None, idx, :]) ** 2).sum(-1)        # (NALL, Na)
     G = REf[idx] + 1j * IMf[idx]
@@ -136,8 +129,8 @@ def run():
     REc, IMc = G_clean.real, G_clean.imag
 
     def res_error(idx, REobs, IMobs):
-        """Resonance-region phase error: reconstruct from anchors' OBSERVED (noisy) complex values,
-        compare to CLEAN truth on held-out resonance-band points."""
+        """Resonance-region phase error: reconstruct from anchors' noisy values,
+        compare to clean truth on held-out resonance-band points."""
         ph_pred = idw_reconstruct(idx, REobs, IMobs)
         err = np.abs(wrap180(ph_pred - PHf_clean))
         held = res_mask & np.array([i not in set(idx) for i in range(NALL)])

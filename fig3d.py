@@ -56,8 +56,8 @@ panel(axA,'(a)')
 axA.set_title(r'three-parameter $(L_x,L_y,h)$ cell, 16 seeds',loc='left',fontsize=10.5,fontweight='bold')
 
 # (b) resonance-error floors, 2D vs 3D.
-# Floors taken from the higher-seed re-runs (surr2d_scaling_ms 20 seeds, surr3d_scaling 16 seeds)
-# so the bar chart matches the curves and the manuscript text; bf provides only the target.
+# Floors from the higher-seed re-runs (surr2d_scaling_ms 20 seeds, surr3d_scaling 16 seeds);
+# bf provides only the target.
 target=float(bf['common_res_target'])
 d2=L('surr2d_scaling_ms.npz')
 fu2=float(np.min(d2['uni_res_mean'])); fr2=float(np.min(d2['rea_res_mean']))

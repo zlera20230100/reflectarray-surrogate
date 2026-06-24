@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Cross-dipole cell (two crossed metal strips, arms Lx,Ly). Same protocol as the main 2-D study:
-# resonance-aware (curvature) vs uniform vs random, multi-seed, with a bootstrap power-law exponent
+# Cross-dipole cell (two crossed metal strips, arms Lx,Ly). Same protocol as the 2-D study:
+# resonance-aware (curvature) vs uniform vs random, multi-seed, bootstrap power-law exponent
 # on the resonance-region held-out phase error. Output: cross_scaling.npz.
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'

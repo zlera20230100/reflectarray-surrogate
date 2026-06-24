@@ -18,10 +18,9 @@ import numpy as np
 import surrogate3d as S
 from surr3d_strategies import resonance_aware_balanced
 
-# use the balanced resonance-aware sampler (space-filling base + curvature-
-# biased refinement). the naive curvature-greedy (S.resonance_aware_anchors)
-# collapses onto unwrap artifacts in 3-D and is kept only as an ablation in
-# surr3d_strategy_compare.npz.
+# balanced resonance-aware sampler (space-filling base + curvature-biased
+# refinement). the naive curvature-greedy (S.resonance_aware_anchors) collapses
+# onto unwrap artifacts in 3-D; kept as an ablation in surr3d_strategy_compare.npz.
 S.resonance_aware_anchors = resonance_aware_balanced
 
 OUT_DIR = os.path.dirname(os.path.abspath(__file__))

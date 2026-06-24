@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-# Builds the Paper-3 figures (setup, scaling, eval, ablation, meta-steer, baseline2, ood) with a
-# common plot style.
+# Builds the Paper-3 figures (setup, scaling, eval, ablation, meta-steer, baseline2, ood).
 import os
 os.environ['KMP_DUPLICATE_LIB_OK']='TRUE'
 import numpy as np
@@ -43,10 +42,10 @@ ax1.add_patch(Rectangle((0.7,4.00),3.4,1.25,fc='#cfe3b8',ec='k',lw=0.9))        
 ax1.add_patch(Rectangle((1.7,5.25),1.4,0.30,fc=ACC,ec='k',lw=0.9))                # patch (center x=2.4)
 ax1.text(0.95,4.62,'FR4',fontsize=8,rotation=90,va='center',ha='center',color=GRN)
 ax1.text(2.40,3.30,'ground plane',ha='center',va='top',fontsize=8,color=NEU)
-# reflection-coefficient double arrow well above the patch (no overlap)
+# reflection-coefficient double arrow above the patch
 ax1.annotate('',xy=(2.40,6.95),xytext=(2.40,5.75),arrowprops=dict(arrowstyle='<->',color=NEU,lw=1.1))
 ax1.text(2.62,6.45,r'$\Gamma(L_x,L_y)$',fontsize=9.5,va='center',color=NEU)
-# patch label via a thin leader into clear space (no overlap with FR4)
+# patch label via a thin leader
 ax1.annotate(r'patch $L_x\!\times\!L_y$',xy=(3.05,5.40),xytext=(4.05,5.95),
              fontsize=8,color=ACC,ha='left',va='center',
              arrowprops=dict(arrowstyle='-',color=ACC,lw=0.7))
@@ -64,7 +63,7 @@ ax1.text(7.575,5.35,'MLP',ha='center',va='center',fontsize=9.5,color=SIG)
 ax1.annotate('',xy=(6.92,5.35),xytext=(6.62,5.35),arrowprops=dict(arrowstyle='->',color=NEU,lw=1.0))
 ax1.annotate('',xy=(8.78,5.35),xytext=(8.25,5.35),arrowprops=dict(arrowstyle='->',color=NEU,lw=1.0))
 ax1.text(8.98,5.35,r'$\Gamma$',fontsize=10.5,ha='center',va='center',color=NEU)
-# autodiff: arrow ABOVE, label BELOW it (clearly separated, no overlap)
+# autodiff: arrow above, label below
 ax1.annotate('',xy=(6.70,4.55),xytext=(8.55,4.55),arrowprops=dict(arrowstyle='->',color=ACC,lw=1.2))
 ax1.text(7.625,4.22,r'$\partial\Gamma/\partial(L_x,L_y)$ autodiff',ha='center',va='center',fontsize=7.8,color=ACC)
 # anchors arrow from cell to surrogate

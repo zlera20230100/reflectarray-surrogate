@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Dual-resonance cell: two separated y-dipoles whose lengths are the two sweep params, giving two
 # resonance ridges; tests whether the curvature criterion samples both bands. Same protocol as the
-# main 2-D study: resonance-aware (curvature) vs uniform vs random, multi-seed, with a bootstrap
-# power-law exponent on the resonance-region held-out phase error. Output: dual_scaling.npz.
+# 2-D study: resonance-aware (curvature) vs uniform vs random, multi-seed, bootstrap power-law
+# exponent on the resonance-region held-out phase error. Output: dual_scaling.npz.
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 import time, numpy as np

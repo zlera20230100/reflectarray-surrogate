@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Transfer of the surrogate across substrates: pretrain on condition A (h=1.0 mm), then adapt to
 # condition B (h=1.5 mm, which shifts the resonance) by warm-starting from the A-trained weights.
-# Warm-start is compared against training from scratch on the same B-anchors and the same optimiser
-# budget, so only the initialisation differs.
+# Warm-start vs training from scratch on the same B-anchors and the same optimiser budget; only the
+# initialisation differs.
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 import time, copy, numpy as np, torch

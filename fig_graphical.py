@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-# Graphical abstract (landscape banner, >=531 x 1328 px, 5 x 13 cm). Three panels: resonant
-# reflection-phase surface with curvature-placed anchors, differentiable surrogate, and the
-# acquisition-strategy comparison.
+# Elsevier graphical abstract: 13 x 5 cm landscape banner (>= 1328 x 531 px).
+# Three panels: phase surface with anchors, surrogate box, acquisition comparison.
 import os
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 import numpy as np
@@ -20,7 +19,7 @@ gs = fig.add_gridspec(1, 3, width_ratios=[1.0, 1.0, 1.12], wspace=0.5,
 def caption(ax, s):
     ax.text(0.5, -0.34, s, transform=ax.transAxes, ha='center', va='top', fontsize=7.0, color='0.15')
 
-# panel 1: resonant reflection-phase surface with curvature anchors
+# panel 1: phase surface, anchors crowded into the resonance band
 ax0 = fig.add_subplot(gs[0, 0])
 ref = np.load(os.path.join(DIR, 'ref2d.npz')); ph = ref['phase']; Lx = ref['Lx']; Ly = ref['Ly']
 ax0.pcolormesh(Lx, Ly, ph, cmap='RdBu_r', shading='auto', rasterized=True)
@@ -31,7 +30,7 @@ ax0.set_xlabel(r'$L_x$', fontsize=8, labelpad=0); ax0.set_ylabel(r'$L_y$', fonts
 ax0.set_xticks([]); ax0.set_yticks([])
 caption(ax0, 'sample where it matters:\ncrowd the resonance band')
 
-# panel 2: differentiable surrogate maps geometry -> complex reflection + gradients
+# panel 2: surrogate maps geometry to reflection and its gradient
 ax1 = fig.add_subplot(gs[0, 1]); ax1.axis('off')
 ax1.add_patch(FancyBboxPatch((0.16, 0.46), 0.68, 0.34, boxstyle='round,pad=0.02,rounding_size=0.06',
               fc='#eef3f8', ec=SIG, lw=1.2, transform=ax1.transAxes))
@@ -45,12 +44,13 @@ ax1.annotate('', xy=(1.01, 0.63), xytext=(0.86, 0.63), transform=ax1.transAxes,
 ax1.text(0.93, 0.85, r'$\Gamma,\ \partial\Gamma/\partial L$', transform=ax1.transAxes, ha='center', fontsize=7.2)
 caption(ax1, 'autodiff gradients drive\ninverse design ($0.9^\\circ$)')
 
-# panel 3: acquisition-strategy comparison
+# panel 3: phase error vs anchor budget for each acquisition rule.
+# resonance-aware + uniform from the 20-seed headline run; GP and LOLA from the joint comparison run.
 ax2 = fig.add_subplot(gs[0, 2])
-onl = np.load(os.path.join(DIR, 'surr2d_online.npz')); lola = np.load(os.path.join(DIR, 'lola.npz'))
-gp = np.load(os.path.join(DIR, 'principled_acq.npz')); N = onl['N']
-for m, c, lab in [(onl['ora_res_mean'], GRN, 'resonance-aware'), (lola['lola_res_mean'], '#e67e22', 'LOLA-Voronoi'),
-                  (gp['gp_res_mean'], SIG, 'GP variance'), (onl['uni_res_mean'], '0.55', 'uniform')]:
+ms = np.load(os.path.join(DIR, 'surr2d_scaling_ms.npz')); lola = np.load(os.path.join(DIR, 'lola.npz'))
+gp = np.load(os.path.join(DIR, 'principled_acq.npz')); N = ms['N']
+for m, c, lab in [(ms['rea_res_mean'], GRN, 'resonance-aware'), (lola['lola_res_mean'], '#e67e22', 'LOLA-Voronoi'),
+                  (gp['gp_res_mean'], SIG, 'GP variance'), (ms['uni_res_mean'], '0.55', 'uniform')]:
     ax2.plot(N, m, '-', color=c, lw=1.6, label=lab)
 ax2.set_xscale('log'); ax2.set_yscale('log')
 ax2.xaxis.set_major_locator(FixedLocator([9, 36])); ax2.xaxis.set_minor_formatter(NullFormatter())
@@ -59,7 +59,9 @@ ax2.set_xlabel('full-wave anchors $N$', fontsize=8, labelpad=1)
 ax2.set_ylabel('phase error (deg)', fontsize=8, labelpad=1)
 ax2.legend(frameon=False, fontsize=5.9, loc='upper right', handlelength=1.1, borderpad=0.1, labelspacing=0.22)
 for s in ['top', 'right']: ax2.spines[s].set_visible(False)
-caption(ax2, 'beats uniform, GP variance,\nand published LOLA-Voronoi')
+# annotate the resonance-aware decay rate (uniform stays the flat ~N^-0.8 baseline)
+ax2.text(22, ms['rea_res_mean'][3] * 0.40, r'$N^{-2.3}$ vs $N^{-0.8}$', color=GRN, fontsize=6.6, ha='center', va='top')
+caption(ax2, r'$0.29^\circ$ at $N{=}36$: ~$20\times$ vs GP,' '\n' r'~$9\times$ vs published LOLA-Voronoi')
 
 fig.suptitle('Resonance-aware active sampling for a data-efficient, differentiable resonant-cell surrogate',
              fontsize=8.6, fontweight='bold', y=0.955)

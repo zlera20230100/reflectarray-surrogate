@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
-# Unit-cell total-field PINN for the patch reflection. Uses multi-scale Fourier features (x,y frequency
-# up to ~3/mm) to represent the patch-edge fields and the resonant standing-wave current, and denser
-# collocation at the patch edges and in the FR4 under the patch. Total-field formulation, Gaussian source,
-# lr decay, best checkpoint, multi-plane least-squares extraction; reports Gamma vs L.
+# Unit-cell total-field PINN for the patch reflection. Multi-scale Fourier features (x,y up to ~3/mm),
+# denser collocation at the patch edges and in the FR4 under the patch. Gaussian source, lr decay,
+# best checkpoint, multi-plane least-squares extraction; reports Gamma vs L.
 import os, sys, time, copy, numpy as np, torch
 import torch.nn as nn
 torch.manual_seed(0); np.random.seed(0)
 dev=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 C0=299792458.0; f0=24e9; epsR=4.4; tand=0.02; h=1.0; p=8.0
-z1,z2=5.0,6.5; z_src=12.0; z_top=16.0; tp=0.25   # source raised + taller domain: more decay room for higher Floquet modes -> cleaner fundamental at extraction
+z1,z2=5.0,6.5; z_src=12.0; z_top=16.0; tp=0.25   # raised source + taller domain so higher Floquet modes decay before extraction
 L=float(sys.argv[2]) if len(sys.argv)>2 else 2.5
 N_ITERS=int(sys.argv[1]) if len(sys.argv)>1 else 9000
 k0=2*np.pi*f0/C0*1e-3; k1=k0*np.sqrt(epsR)
@@ -92,7 +91,7 @@ with torch.no_grad():
 def fix(t): return t.detach().requires_grad_(True)
 # fixed comprehensive batch
 Xg_,Yg_,Zg_=rp(6000,0,z_top); Xu_,Yu_,Zu_=rp(3000,0.0,h,xr=L/2+0.3); Xe_,Ye_,Ze_=edge(3000)
-Xx_,Yx_,Zx_=rp(5000,7.0,11.0)   # dense extraction/clean region so the field there is well-constrained (anti-overfit)
+Xx_,Yx_,Zx_=rp(5000,7.0,11.0)   # dense in the extraction region to constrain the field there
 XI=fix(torch.cat([Xg_,Xu_,Xe_,Xx_])); YI=fix(torch.cat([Yg_,Yu_,Ye_,Yx_])); ZI=fix(torch.cat([Zg_,Zu_,Ze_,Zx_]))
 xg0,yg0,_=rp(1200,0,0); ZG=torch.zeros_like(xg0,requires_grad=True); XG=fix(xg0); YG=fix(yg0)
 XPp=fix((torch.rand(3000,1,device=dev)*2-1)*L/2); YPp=fix((torch.rand(3000,1,device=dev)*2-1)*L/2); ZPp=fix(h+torch.rand(3000,1,device=dev)*tp)
