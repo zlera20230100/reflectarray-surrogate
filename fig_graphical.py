@@ -60,7 +60,8 @@ ax2.set_ylabel('phase error (deg)', fontsize=8, labelpad=1)
 ax2.legend(frameon=False, fontsize=5.9, loc='upper right', handlelength=1.1, borderpad=0.1, labelspacing=0.22)
 for s in ['top', 'right']: ax2.spines[s].set_visible(False)
 # annotate the resonance-aware decay rate (uniform stays the flat ~N^-0.8 baseline)
-ax2.text(22, ms['rea_res_mean'][3] * 0.40, r'$N^{-2.3}$ vs $N^{-0.8}$', color=GRN, fontsize=6.6, ha='center', va='top')
+ax2.text(24, 1.4, r'$N^{-2.3}$ vs $N^{-0.8}$', color='0.15', fontsize=6.6, ha='center', va='center',
+         bbox=dict(boxstyle='round,pad=0.15', fc='white', ec='none', alpha=0.85))
 caption(ax2, r'$0.29^\circ$ at $N{=}36$: ~$20\times$ vs GP,' '\n' r'~$9\times$ vs published LOLA-Voronoi')
 
 fig.suptitle('Resonance-aware active sampling for a data-efficient, differentiable resonant-cell surrogate',
