@@ -149,7 +149,7 @@ variant scoring candidates only on already-acquired anchors retains a steep expo
 ($k\!=\!1.73\,[1.49,1.94]$, separated from both uniform and random) and reaches sub-degree resonance
 error. The criterion also beats both textbook Gaussian-process uncertainty (maximum-variance) active learning
 ($\sim\!20\times$) and the standard published adaptive sampler LOLA--Voronoi~\cite{crombecq2011}
-($\sim\!7\times$)---both space-fill rather than crowding the resonance---and the advantage \emph{recurs on
+($\sim\!9\times$)---both space-fill rather than crowding the resonance---and the advantage \emph{recurs on
 two further cell topologies}---a cross dipole (uniform sampling fails entirely) and a harder dual-resonance
 cell---and, changing \emph{only the oracle}, \emph{transfers off electromagnetics entirely} to two non-EM
 resonance-dominated responses (a driven-oscillator/RLC line shape and a Fano resonance, where uniform again
@@ -642,7 +642,7 @@ reaches \SI{0.49}{\degree} resonance-region error at $N\!=\!36$ with exponent $k
 statistically separated from uniform (\SI{4.67}{\degree}, $k\!=\!0.61\,[0.50,0.70]$) and best at every
 budget. On the Fano line shape the contrast is starker, mirroring the cross dipole: uniform sampling
 \emph{fails outright}---it never resolves the asymmetric resonance, stalling at $\approx\!\SI{35}{\degree}$
-($k\!=\!0.17\,[0.16,0.18]$)---whereas resonance-aware sampling reaches sub-degree (\SI{0.68}{\degree}) once
+($k\!=\!0.17\,[0.16,0.18]$)---whereas resonance-aware sampling reaches sub-degree (\SI{0.68}{\degree}, $k\!=\!3.93$) once
 it has enough anchors to locate the narrow band. (We report honestly that on the very sharp Fano profile even
 resonance-aware sampling needs $N\!\gtrsim\!20$ before it locks onto the band; below that it has not yet
 found the resonance, a threshold the smooth-plateau-dominated uniform grid never crosses at all.)
