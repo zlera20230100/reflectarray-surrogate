@@ -270,7 +270,7 @@ oracle-free online variant (committee disagreement between two interpolants). Th
 criterion is that, unlike a global uncertainty rule, it crowds the narrow band where the design-relevant
 phase actually rotates (Table~\ref{tab:acqcompare}).
 
-\begin{table}[!htbp]\centering
+\begin{table}[H]\centering
 \caption{Where the resonance-aware criterion differs from the acquisition rules a practitioner would
 otherwise reach for: only it concentrates samples in the narrow resonance band rather than space-filling
 (quantitative comparisons in Section~\ref{sec:eff}).}
@@ -309,7 +309,7 @@ task: a data-free PINN (Maxwell residual only, no anchors) and a physics-informe
 residual plus the anchor data of Eq.~\eqref{eq:data}), to test directly whether the physics residual
 helps. Settings are in Table~\ref{tab:repro}.
 
-\begin{table}[!htbp]\centering\small
+\begin{table}[H]\centering\small
 \caption{Reproducibility settings. The full-wave reference is openEMS FDTD on an $11\times9=99$-point
 $(L_y,L_x)$ grid in the \SI{24}{GHz} waveguide simulator; surrogate and baseline training as listed.}
 \label{tab:repro}
@@ -328,7 +328,7 @@ PINN ablation & geometry-conditioned scalar total-field $E_y(x,y,z;L)$, Maxwell 
 Metric & circular phase error (overall / resonance region $L_y\!\le\!2.8$), $\lvert\,|\Gamma|\,\rvert$ error \\
 3-D study (Sec.~\ref{sec:3d}) & $(L_x,L_y,h)$, $9\!\times\!9\!\times\!4\!=\!324$ grid; $N\!=\!20,30,45,60,90,120$; 5 seeds; $h$-stratified acquisition; $k$-fit 2000-sample bootstrap \\
 Out-of-domain (Sec.~\ref{sec:outdomain}) & same surrogate/criterion/baselines, oracle replaced: Lorentzian $H\!=\!1/(\delta+\im)$ and Fano $t\!=\!(\delta+q)/(\delta+\im)$, $q\!=\!1.5$, on $11\!\times\!9$ grids; $N\!=\!9,\dots,36$; 6 seeds \\
-Hardware & single NVIDIA RTX~4070~Ti (CUDA~12.8) \\
+Hardware & a single consumer GPU (CUDA) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -429,7 +429,7 @@ online variant delivers it without oracle access.}
 \label{fig:acq}
 \end{figure}
 
-\begin{table}[!htbp]\centering\small
+\begin{table}[H]\centering\small
 \caption{Resonance-region phase error (deg, mean$\pm$std over 6 seeds) vs anchor budget $N$ for the three
 placement strategies. Resonance-aware sampling is separated from uniform/random outside the error bars at
 every $N$.}
