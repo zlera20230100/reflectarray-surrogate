@@ -3,7 +3,7 @@
 **Resonance-Aware Active Sampling for Data-Efficient Differentiable Surrogates of
 Resonant Responses: A Reflectarray Unit-Cell Case Study**
 
-Long Zhang\* (corresponding: 20230100@huat.edu.cn), Xuan Shi, Liang Ma, Shengjun Wu, Zijuan Wu
+Long Zhang\* (corresponding: 20230100@huat.edu.cn), Xuan Shi, Liang Ma, Shengjun Wu, Kai You, Zijuan Wu
 Hubei University of Automotive Technology, Shiyan 442002, China
 
 This repository contains the code, the full-wave reference / result data, and the figure
