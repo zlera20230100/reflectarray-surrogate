@@ -52,16 +52,16 @@ expensive-to-sample, \emph{resonance-dominated} response, in which a sharp, high
 output over a narrow design window---costly to simulate and hard for physics-informed neural networks
 (PINNs). We develop a resonance-aware active-learning methodology: a curvature-driven acquisition that
 concentrates a scarce full-wave budget on the resonance, coupled to a \emph{differentiable surrogate} that
-yields design gradients. On 24-GHz reflectarray unit cells, a \emph{deployable} online acquisition---scoring
+supplies design gradients. On 24-GHz reflectarray unit cells, a \emph{deployable} online acquisition---scoring
 candidates using only already-acquired anchors, no oracle---learns the two-parameter reflection-phase
 surface to sub-degree resonance error from $\mathcal{O}(10)$ full-wave anchors and beats both textbook
 Gaussian-process uncertainty sampling and a published adaptive sampler (LOLA--Voronoi); an idealised oracle
-that scores on the full surface bounds the achievable placement from above (a steeper $\approx\!N^{-2.3}$ decay
+scoring on the full surface bounds the achievable placement from above (a steeper $\approx\!N^{-2.3}$ decay
 versus uniform sampling's $N^{-0.8}$). The advantage recurs across three reflectarray topologies and,
-changing only the oracle, transfers to two non-electromagnetic resonances---evidence it is a reusable method
-for resonance-dominated responses, not a one-off heuristic. The surrogate's
+changing only the oracle, transfers to two non-electromagnetic resonances---evidence that it is a reusable method
+for resonance-dominated responses rather than a one-off heuristic. The surrogate's
 gradients agree with full wave and drive inverse design to a \SI{0.9}{\degree} average error. A controlled
-ablation shows a \emph{total-field} Maxwell-residual term is unnecessary and counterproductive here---the
+ablation shows that a \emph{total-field} Maxwell-residual term is unnecessary and counterproductive here---the
 lever is data placement, not the physics residual. The artificial-intelligence contribution is this
 resonance-aware sampling-plus-differentiable-surrogate methodology; the engineering application is low-cost,
 gradient-based characterisation and inverse design of resonant reflectarray/metasurface unit cells. All
@@ -76,9 +76,9 @@ A recurring problem for machine learning in the physical sciences is to build a 
 ideally \emph{differentiable} surrogate of an \emph{expensive-to-sample, resonance-dominated} parametric
 response---one whose output rotates through its full range over a narrow window of the design variables
 because of a sharp, high-$Q$ resonance. Such responses arise across photonics, RF, and metamaterials, and
-they stress two of the most active lines in scientific machine learning: \emph{active learning}, which must
+they stress two active lines in scientific machine learning: \emph{active learning}, which must
 decide where to spend a scarce simulation budget, and \emph{physics-informed} losses, whose benefit is
-uncertain precisely for stiff, high-frequency solutions. This paper studies that AI problem and uses a
+uncertain precisely for stiff, high-frequency solutions. This paper studies that AI problem on a
 reflectarray unit cell as a concrete, fully validated testbed.
 Coded metasurfaces and reflectarrays synthesise a target aperture field by assigning each sub-wavelength
 cell a prescribed reflection phase through its
@@ -87,13 +87,13 @@ phase-synthesis task underlies transmitarrays and Huygens
 metasurfaces~\cite{abdelrahman2015transmitarray,epstein2014huygens}: in every case the designer must
 know, accurately and at low cost, how a cell's complex reflection (or transmission) coefficient depends
 on its dimensions, and increasingly must \emph{differentiate} that dependence so that gradient-based
-inverse design~\cite{liu2018,molesky2018} can place hundreds of cells at once. (Adjoint sensitivities give
+inverse design~\cite{liu2018,molesky2018} can place hundreds of cells together. (Adjoint sensitivities give
 exact full-wave gradients~\cite{molesky2018} but require a bespoke solver-coupled implementation per
 problem; a differentiable surrogate instead yields reusable geometry gradients from a few black-box solver
 calls, which is what we pursue here.) The bottleneck is that the cell response is governed
 by a sub-wavelength resonance: as the resonant dimension is swept, the reflection phase rotates rapidly
-through the full design range over a narrow geometric window, and it is exactly this sharp, high-$Q$
-feature that makes the response both expensive to characterise and awkward to model.
+through the full design range over a narrow geometric window, and this sharp, high-$Q$
+feature is what makes the response both expensive to characterise and awkward to model.
 
 The standard route is to build a look-up library by full-wave sweeping, which is accurate but scales
 poorly with the number of geometric parameters. Data-driven surrogates remove the per-query solve---both
@@ -101,7 +101,7 @@ neural-operator models that learn the solution map~\cite{ludeeponet2021,li2021fn
 supervised networks for photonic and antenna response~\cite{jiang2021,koziel2024surrogate}---but their
 training cost grows with dimensionality~\cite{sarker2023mlreview}, which \emph{active-learning} surrogates mitigate by
 sampling where the model is least certain~\cite{settles2012,lookman2019}---a strategy shown to cut the
-number of simulations by more than an order of magnitude for photonic-surface
+simulation count by more than an order of magnitude for photonic-surface
 surrogates~\cite{pestourie2020}. Yet generic
 uncertainty-driven acquisition is not tailored to the structure that makes these responses hard: a
 \emph{localised} resonance that dominates both the cost and the design-relevant phase, and that couples
@@ -113,10 +113,10 @@ variants~\cite{beltran2022,nohra2024pinnem}. PINNs are,
 however, known to struggle with sharp, high-frequency, or stiff
 solutions~\cite{krishnapriyan2021,wang2021ntk,wanggrad2021}, and the sub-wavelength cell resonance is
 precisely such a feature; whether a physics-informed loss helps or hurts a \emph{sparse-data} surrogate in
-this regime is, to our knowledge, untested at the device level. The methodological gap we address is
-therefore at the intersection of these AI lines---resonance-aware active learning, differentiable
+this regime is, to our knowledge, untested at the device level. The gap we address therefore lies
+at the intersection of these AI lines---resonance-aware active learning, differentiable
 surrogates that yield physically consistent gradients, and a quantified account of when a physics-informed
-loss helps or hurts---and it crystallises in one concrete, answerable question on the testbed: \emph{for
+loss helps or hurts---and it reduces to one concrete, answerable question on the testbed: \emph{for
 the resonant reflection response, does adding the Maxwell residual help a sparse-data surrogate, or is
 well-placed data enough on its own?}
 
@@ -125,7 +125,7 @@ chooses points by response curvature/error, Gaussian-process posterior variance,
 space-filling~\cite{settles2012,crombecq2011,gramacy2020}, we identify the \emph{resonance class} of
 expensive responses and give an acquisition tailored to it---one that deliberately \emph{crowds} the narrow
 high-$Q$ band that those space-filling rules dilute---and we establish it not as a heuristic but as a
-characterised method, through (i) a bootstrapped sample-complexity law with confidence intervals, (ii)
+characterised method through (i) a bootstrapped sample-complexity law with confidence intervals, (ii)
 cross-domain transfer across three reflectarray topologies and two non-electromagnetic line shapes by
 changing only the oracle, (iii) a sampler--learner coupling finding (the clustered anchors that help a
 differentiable surrogate hurt a global-kernel model), (iv) an off-grid solver-in-the-loop closure, and (v)
@@ -133,8 +133,8 @@ a device-level negative result that a total-field Maxwell residual is counterpro
 coherent methodological package for resonance-dominated responses, not five separate observations.
 
 \paragraph{Contributions.} The contributions are methodological---each is an AI/ML method for
-expensive-to-sample, resonance-dominated parametric responses, with the 24-GHz reflectarray cell as the
-testbed on which it is validated against full wave. The headline is the first: a
+expensive-to-sample, resonance-dominated parametric responses, validated against full wave on the
+24-GHz reflectarray cell. The headline is the first: a
 \emph{resonance-class} acquisition criterion that beats every off-the-shelf sampler we tested and is shown
 to be a reusable, characterised method---not a heuristic---by a bootstrapped sample-complexity law and
 cross-domain transfer.
@@ -213,7 +213,7 @@ E_y(z)=A\,e^{-\im k_0 z}+B\,e^{+\im k_0 z},\qquad k_0=\frac{2\pi f}{c_0},
 \end{equation}
 so sampling the mean $E_y$ at two clean planes $z_1,z_2$ in the air region gives a $2\times2$ linear
 system for $(A,B)$ and the reflection coefficient $\Gamma=A/B$ referenced to the ground plane. This
-two-plane traveling-wave extraction avoids the instability of source-subtraction methods.
+two-plane traveling-wave extraction avoids the instability of source subtraction.
 
 \paragraph{Two-parameter reference surface.} Sweeping $L_y\in[2,6]$~mm and $L_x\in[2,6]$~mm on an
 $11\times9=99$ grid in openEMS (FDTD) yields the reference of Fig.~\ref{fig:setup}b. The phase spans
@@ -227,8 +227,8 @@ resonance---the rapid phase rotation---sits at small $L_y$ and \emph{sharpens as
 phase step across the resonance is $\approx\!\SI{173}{\degree}$ per \SI{0.4}{mm} at $L_x=\SI{2}{mm}$ but
 only $\approx\!\SI{42}{\degree}$ at $L_x=\SI{6}{mm}$, because a narrower patch is a higher-$Q$ resonator.
 The square-patch diagonal ($L_x=L_y$) of this surface reproduces an independent square-patch sweep to
-within \SI{4}{\degree}, confirming the rectangular generalisation. This surface is the object the
-surrogate must learn, and its anisotropic, localised sharpness is exactly what makes \emph{where} one
+within \SI{4}{\degree}, confirming the rectangular generalisation. This surface is what the
+surrogate must learn, and its anisotropic, localised sharpness is what makes \emph{where} one
 samples matter.
 
 \section{Method}\label{sec:method}
@@ -243,8 +243,8 @@ complex misfit over an anchor set $\mathcal{A}$ of full-wave points,
 Because $\Gamma_\theta$ is a smooth network of the geometry, the geometry gradient
 $\partial\Gamma_\theta/\partial(L_x,L_y)$---and hence $\partial\angle\Gamma/\partial L_x$,
 $\partial\angle\Gamma/\partial L_y$---is available by automatic differentiation at the cost of one
-backward pass, which is what makes the surrogate usable inside a gradient-based inverse-design loop
-rather than as a mere look-up table.
+backward pass, which lets the surrogate drive a gradient-based inverse-design loop
+rather than serve as a mere look-up table.
 
 \paragraph{Resonance-aware active sampling.} Uniform sampling spends anchors evenly and therefore wastes
 them on the smooth plateau while under-resolving the sharp resonance. We instead place anchors by a
@@ -256,11 +256,11 @@ a(g)=\big\lVert \nabla^2_{\!d}\,\phi(g)\big\rVert ,
 \label{eq:acq}
 \end{equation}
 and anchors are added greedily by Algorithm~\ref{alg:active}: seed with the corners, then repeatedly add
-the candidate with the largest curvature score not yet represented, which in practice over-samples the
-small-$L_y$ resonance band and leaves the plateau sparse. We are explicit about scope: here the
+the not-yet-represented candidate with the largest curvature score, which in practice over-samples the
+small-$L_y$ resonance band and leaves the plateau sparse. On scope: here the
 acquisition is scored on the precomputed $99$-point reference, so this is \emph{offline subset selection}
-that quantifies the value of resonance-aware placement, rather than a solver-in-the-loop online active-
-learning loop; deploying it online (scoring on a coarse pilot grid, then querying the solver) is
+that quantifies the value of resonance-aware placement, rather than a solver-in-the-loop online
+active-learning loop; deploying it online (scoring on a coarse pilot grid, then querying the solver) is
 straightforward but not what we benchmark.
 
 \paragraph{Relation to prior active sampling.} Curvature- and error-driven adaptive sampling is itself a
@@ -276,8 +276,8 @@ co-chosen. Against this backdrop the criterion decisively outperforms the two ac
 practitioner would otherwise reach for. The first, generic uncertainty (maximum-variance) sampling, is the textbook
 information-theoretic choice~\cite{settles2012}; we benchmark it directly (Section~\ref{sec:eff}) and show it
 \emph{space-fills} and thereby fails on a localised resonance. The second, query-by-committee, motivates our
-oracle-free online variant (committee disagreement between two interpolants). The point of the curvature
-criterion is that, unlike a global uncertainty rule, it crowds the narrow band where the design-relevant
+oracle-free online variant (committee disagreement between two interpolants). Unlike a global uncertainty
+rule, the curvature criterion crowds the narrow band where the design-relevant
 phase actually rotates (Table~\ref{tab:acqcompare}).
 
 \begin{table}[!ht]\centering
@@ -346,7 +346,7 @@ Hardware & a single consumer GPU (CUDA) \\
 \section{Data efficiency of resonance-aware sampling}\label{sec:eff}
 Figure~\ref{fig:scaling} and Table~\ref{tab:scaling} report the resonance-region phase error against the
 anchor budget $N$ for the three placement strategies. Resonance-aware sampling dominates at every
-budget. All three strategies are run over twenty seeds (the network training is stochastic; random also
+budget. All three are run over twenty seeds (the network training is stochastic; random also
 re-draws anchors), and we report mean$\pm$std. Resonance-aware sampling reaches
 $\SI{0.78}{\degree}\pm\SI{0.11}{\degree}$ at $N\!=\!16$ and $\SI{0.29}{\degree}\pm\SI{0.06}{\degree}$ at
 $N\!=\!36$, versus uniform ($\SI{12.3}{\degree}\!\to\!\SI{7.8}{\degree}$) and random
@@ -355,10 +355,10 @@ budget} (Fig.~\ref{fig:scaling}), so the dominance is not a training-noise artef
 $\varepsilon(N)=C\,N^{-k}$ to the \emph{resonance-region} error with a bootstrap 95\% CI over seeds gives
 $k=2.28\,[2.15,2.40]$ ($r^2=0.84$) for resonance-aware sampling against $k=0.77\,[0.68,0.86]$ ($r^2=0.77$, uniform) and
 $0.80\,[0.62,1.02]$ ($r^2=0.94$, random); the resonance-aware exponent is statistically separated from both, the wider CIs
-of the six-seed run having tightened at twenty seeds. We still rely on per-budget dominance as well:
+of the six-seed run having tightened at twenty seeds. Per-budget dominance holds too:
 resonance-aware sampling dominates random outside the per-budget $\pm$std bands at
-every $N$ (Table~\ref{tab:dataeff}), each anchor spent where the response actually changes. The scope of this
-claim is narrow: over the \emph{whole} surface the resonance-aware advantage comes mainly from a lower constant
+every $N$ (Table~\ref{tab:dataeff}), each anchor spent where the response actually changes. This
+claim is narrow in scope: over the \emph{whole} surface the resonance-aware advantage comes mainly from a lower constant
 $C$ (about $2.5\times$ smaller) rather than a steeper exponent, since the plateau is already easy for any
 strategy. The steeper exponent is specific to the resonance band, which is where characterisation cost
 is actually incurred. On the held-out surface overall, resonance-aware sampling still reaches
@@ -377,8 +377,8 @@ $N^{-0.8}$ (random); the steeper exponent is statistically resolved from both at
 
 \paragraph{The acquisition criterion is deployable (no oracle), not an upper bound.} The curvature criterion above scores
 candidates on the precomputed full-wave surface, so it measures the \emph{value of ideal placement}---an
-upper bound, since a practitioner cannot score points they have not yet simulated. We therefore also run a fully
-\emph{online} acquisition that may read the full-wave response \emph{only at anchors it has already
+upper bound, since a practitioner cannot score points not yet simulated. We therefore also run a fully
+\emph{online} acquisition that reads the full-wave response \emph{only at anchors it has already
 acquired}: starting from the four corners, it adds at each step the candidate of maximum committee
 disagreement between a smooth and a sharp inverse-distance interpolant of the acquired complex
 reflection. This data-driven uncertainty is large exactly where the \emph{observed} response is curved
@@ -389,7 +389,7 @@ separated from \emph{both} uniform ($0.82\,[0.68,0.97]$) and random ($0.84\,[0.5
 \SI{6.9}{\degree}, random \SI{8.6}{\degree}); at the smallest budgets it even matches the oracle on the
 overall held-out surface. The data efficiency is thus a usable algorithm, deployable on a coarse pilot
 acquisition, not a property of privileged access to the answer. (The committee powers were fixed a priori,
-not tuned on the held-out outcome.) Finally, to confirm that this data efficiency is not an artefact of
+not tuned on the held-out outcome.) To confirm that this data efficiency is not an artefact of
 selecting from the precomputed lattice, we re-ran the online sampler with openEMS \emph{in the loop} on a
 continuous $41\times41$ candidate grid (\SI{0.1}{\milli\metre} spacing, far finer than the reference
 lattice's \SI{0.4}{\milli\metre} in $L_y$ and \SI{0.5}{\milli\metre} in $L_x$), invoking the full-wave solver at each chosen continuous
@@ -398,7 +398,7 @@ trained on them reaches \SI{1.42}{\degree} resonance-region phase error on the h
 decaying monotonically from \SI{3.70}{\degree} at $N\!=\!9$ (\SI{2.92}{\degree}, \SI{1.81}{\degree},
 \SI{1.42}{\degree} at $N\!=\!12,16,20$). The solver-in-the-loop sampler thus selects genuinely off-grid
 geometries and still reaches sub-\SI{1.5}{\degree} accuracy on points it never queried, so the efficiency is
-a property of the acquisition rule rather than of a privileged discrete pool. The run is taken to $N\!=\!20$
+a property of the acquisition rule rather than of a privileged discrete pool. The run goes to $N\!=\!20$
 on this finer, harder continuous pool; the residual gap to the on-grid online figure (\SI{0.68}{\degree} at
 $N\!=\!36$) reflects the smaller budget and the finer candidate set, and \SI{1.42}{\degree} is already well
 inside design tolerance---this is a closure check, not a regression.
@@ -406,9 +406,9 @@ inside design tolerance---this is a closure check, not a regression.
 \paragraph{The advantage holds against principled active learning, not only uniform/random.} A natural
 objection is that any sensible active-learning rule would do as well. It does not. We ran the textbook
 information-theoretic baseline---Gaussian-process \emph{uncertainty} (maximum posterior-variance) sampling,
-fit on the acquired anchors only---and it lands at \SI{5.56}{\degree} resonance error with exponent
+fit on the acquired anchors only---and it lands at \SI{5.56}{\degree} resonance error, with exponent
 $k\!=\!0.95\,[0.84,1.04]$ at $N\!=\!36$: barely better than uniform (\SI{6.9}{\degree}, $0.82$) and
-$\sim\!20\times$ worse than the resonance-aware criterion (\SI{0.28}{\degree}, $k\!=\!2.26$, this comparison run).\footnote{The GP and LOLA--Voronoi benchmarks were re-run jointly with the resonance-aware criterion under one shared seed and configuration, so every rule is evaluated under identical conditions. The resonance-aware value in this joint comparison (\SI{0.28}{\degree}, $k\!=\!2.26$) now agrees with the headline data-efficiency run of Tables~\ref{tab:dataeff}--\ref{tab:scaling} (\SI{0.29}{\degree}, $k\!=\!2.28$): the small earlier discrepancy (a \SI{0.37}{\degree}, $k\!=\!2.07$ headline figure) was a low-seed (six-seed) artefact that disappears once the headline run is repeated over twenty seeds---the two runs now coincide at $\approx\!\SI{0.29}{\degree}$, $k\!\approx\!2.28$.} The reason GP uncertainty falls short is
+$\sim\!20\times$ worse than the resonance-aware criterion (\SI{0.28}{\degree}, $k\!=\!2.26$, this comparison run).\footnote{The GP and LOLA--Voronoi benchmarks were re-run jointly with the resonance-aware criterion under one shared seed and configuration, so every rule is evaluated under identical conditions. The resonance-aware value in this joint comparison (\SI{0.28}{\degree}, $k\!=\!2.26$) agrees with the headline data-efficiency run of Tables~\ref{tab:dataeff}--\ref{tab:scaling} (\SI{0.29}{\degree}, $k\!=\!2.28$): the small earlier discrepancy (a \SI{0.37}{\degree}, $k\!=\!2.07$ headline figure) was a low-seed (six-seed) artefact that vanishes once the headline run is repeated over twenty seeds---the two runs then coincide at $\approx\!\SI{0.29}{\degree}$, $k\!\approx\!2.28$.} Why GP uncertainty falls short is
 instructive: maximum-variance sampling \emph{space-fills}---it spreads points to reduce global
 uncertainty---whereas a resonance-dominated response needs points \emph{crowded} into the narrow band where
 the phase rotates. Part of this shortfall is a \emph{stationarity} artefact: replacing the stationary kernel
@@ -416,7 +416,7 @@ with an input-warped \emph{non-stationary} GP (a learned monotone warp of the re
 the gap, reaching \SI{0.44}{\degree} resonance error at $N\!=\!36$ with exponent $k\!=\!2.11$---far better
 than the stationary GP's \SI{5.56}{\degree}. Even this fairer, resonance-adapted baseline, however, does not
 overtake the resonance-aware criterion, which still leads at every budget (\SI{0.29}{\degree} at $N\!=\!36$).
-The curvature criterion is the principled choice here precisely because it targets the resonance band
+The curvature criterion is the principled choice here because it targets the resonance band
 directly; an off-the-shelf stationary uncertainty rule does not, and even a non-stationary one trails it.
 
 \paragraph{The advantage holds against a published adaptive sampler.} Uncertainty sampling is not the only
@@ -427,7 +427,7 @@ the same surrogate and budgets, it reaches \SI{2.61}{\degree} resonance-region e
 ($k\!=\!1.79\,[1.63,1.97]$): better than uniform, random, and GP uncertainty (its nonlinearity term does
 pull some anchors toward the resonance), but still $\sim\!9\times$ worse than the oracle curvature criterion
 (\SI{0.28}{\degree}, same comparison run) and $\sim\!4\times$ worse than the deployable online variant (\SI{0.68}{\degree}). The
-reason is the same: LOLA--Voronoi spends half its budget on space-filling exploration, whereas a
+reason is again that LOLA--Voronoi spends half its budget on space-filling exploration, whereas a
 resonance-dominated surface rewards crowding the narrow band. Across uniform, random, textbook GP
 uncertainty, and a published adaptive sampler, the resonance-aware family is best at every budget
 (Fig.~\ref{fig:acq})---the methodological point of the paper.
@@ -497,7 +497,7 @@ Section~\ref{sec:method}, applied \emph{globally} in 3-D---the unchanged 2-D met
 not a constructed foil---\emph{fails}: it over-concentrates anchors on
 the resonance of a single $h$-slice and never learns the $h$-dependence (resonance error stuck at
 $38$--$59^\circ$, not improving with $N$; Table~\ref{tab:3d}, last column). The remedy is to
-\emph{stratify} the acquisition along the added axis---cover the resonance band within every $h$-slice.
+\emph{stratify} the acquisition along the added axis, covering the resonance band within every $h$-slice.
 With stratified resonance-aware sampling the advantage not only carries but \emph{widens}: resonance-region
 error falls to \SI{10.6}{\degree} at $N\!=\!30$ and \SI{0.49}{\degree} at $N\!=\!120$, whereas uniform never
 falls below $\approx\!\SI{18}{\degree}$ at any tested budget and random needs $N\!=\!120$ (\SI{5.7}{\degree})
@@ -515,7 +515,7 @@ $\approx\!18^\circ$ (3-D)---it never reaches the target---while stratified reson
 sub-degree floor ($0.49^\circ$ in 3-D, $0.29^\circ$ in 2-D). On the \emph{whole} surface (a less
 design-relevant metric) the saving still grows, from $\approx\!1.1\times$ to $\approx\!2.0\times$. The
 lesson is concrete and transferable: in higher dimension, active sampling must be stratified along the
-added axes; done so, the full-wave-budget saving \emph{grows}, because uniform coverage becomes
+added axes; once it is, the full-wave-budget saving \emph{grows}, because uniform coverage becomes
 exponentially expensive while the resonance stays low-dimensional. (On the whole surface, random and
 uniform remain competitive---resonance-aware specialises in the resonant phase, which is exactly the
 quantity coded designs need.)
@@ -574,7 +574,7 @@ $1.2$--$8.5\times$ more accurate, and warm-start at $k\!=\!4$ already \emph{beat
 The surrogate therefore transfers: the $(L_x,L_y)\!\to\!\Gamma$ structure learned on one board is reused,
 so adapting to a new substrate costs $\sim\!4\times$ fewer full-wave simulations than starting over. This
 ``train once, adapt cheaply'' behaviour is the practical pay-off of a lightweight, data-driven surrogate;
-we demonstrate it for a substrate-thickness change and do not claim it across arbitrarily different cells.
+we demonstrate it for a substrate-thickness change and make no claim across arbitrarily different cells.
 
 \begin{figure}[!htbp]\centering
 \includegraphics[width=0.6\linewidth]{fig_p3_transfer.png}
@@ -607,7 +607,7 @@ advantage still recurs, though more modestly (Fig.~\ref{fig:cross}b): resonance-
 $k\!=\!0.15$) and \SI{33}{\degree} (random, $k\!=\!0.31$)---about $2\times$ more accurate with a steeper
 exponent. We report honestly that \emph{no} method reaches sub-degree error here: resolving two narrow
 bands needs more than the $\le\!36$-anchor budget that suffices for a single band, an expected
-budget-versus-band-count limit. The comparative ranking, however, is unchanged---the curvature criterion
+budget-versus-band-count limit. The comparative ranking, however, is unchanged: the curvature criterion
 again dominates.
 
 Across the patch, the cross dipole (where uniform collapses), and the dual-resonance cell (the harder
@@ -651,7 +651,7 @@ it has enough anchors to locate the narrow band. (We report honestly that on the
 resonance-aware sampling needs $N\!\gtrsim\!20$ before it locks onto the band; below that it has not yet
 found the resonance, a threshold the smooth-plateau-dominated uniform grid never crosses at all.)
 
-These two systems are \emph{analytic}, so their oracle is cheap; this experiment therefore demonstrates that
+These two systems are \emph{analytic}, so their oracle is cheap; this experiment therefore shows that
 the \emph{acquisition criterion} transfers to non-electromagnetic resonance-dominated responses, not that it
 saves cost on an expensive non-EM solver. With that caveat, the data-efficiency advantage now recurs across
 three electromagnetic cell topologies (patch, cross dipole, dual-resonance) \emph{and} two non-electromagnetic
@@ -680,13 +680,13 @@ emerges under the \emph{clustered} resonance-aware anchors: the RBF support-vect
 markedly (MAE $>\SI{14}{\degree}$) because kernel regression with a single global length scale and
 non-uniform support extrapolates poorly across the resonance, and the plain ANN is competitive only at
 the largest budget. The differentiable network is thus the better partner for resonance-aware
-sampling---which is precisely the regime that minimises full-wave cost---giving phase MAE
+sampling---the regime that minimises full-wave cost---giving phase MAE
 \SI{1.84}{\degree} ($N\!=\!16$) and \SI{1.12}{\degree} ($N\!=\!36$) on those anchors. The practical
 implication is that the sampling strategy and the learner must be chosen together: active sampling pays
 off only with a learner that tolerates clustered training points.
 
 One might object that a 2-parameter surface needs no neural model at all---a classical interpolant would
-do. We therefore add thin-plate-spline RBF interpolation and Gaussian-process kriging on the same anchors.
+suffice. We therefore add thin-plate-spline RBF interpolation and Gaussian-process kriging on the same anchors.
 The differentiable MLP is best at every budget: on resonance-aware anchors at $N\!=\!16$ it gives
 \SI{1.84}{\degree} versus \SI{6.33}{\degree} (RBF) and \SI{19.4}{\degree} (kriging), and at $N\!=\!36$
 \SI{1.11}{\degree} versus \SI{1.47}{\degree} and \SI{5.85}{\degree}. The classical interpolants suffer the
@@ -738,7 +738,7 @@ resonance-aware anchors, so the neural surrogate is not a gratuitous choice.}
 \end{figure}
 
 \section{Differentiable geometry gradients}\label{sec:grad}
-The surrogate's value over a black-box look-up is its gradient. Comparing the autodiff geometry gradient
+The surrogate's value over a black-box look-up table is its gradient. Comparing the autodiff geometry gradient
 to a full-wave central finite difference over the grid (Fig.~\ref{fig:eval}b), the transverse partial
 $\partial\angle\Gamma/\partial L_x$ is highly consistent (cosine $0.99$, mean relative error $0.25$) and
 the resonant-direction partial $\partial\angle\Gamma/\partial L_y$ is moderately consistent (cosine
@@ -789,7 +789,7 @@ this, reaching the same target phase through different $(L_x,L_y)$ combinations 
 companion magnitude target.
 
 Because these eight targets are drawn from the achievable surface, this is an on-distribution
-self-consistency test; to probe genuine robustness we add ten \emph{off-surface} targets---requesting
+self-consistency test; to probe robustness we add ten \emph{off-surface} targets---requesting
 $|\Gamma|$ values the surface cannot deliver at the requested phase, and phases beyond the coverage edge.
 The solver degrades gracefully, returning the nearest achievable geometry: the full-wave-verified phase
 error rises from $\SI{0.9}{\degree}$ (on-surface) to $\SI{8.4}{\degree}$ mean (max $\SI{32}{\degree}$,
@@ -834,13 +834,13 @@ $+48.0$  & 0.73 & 2.15 & 2.00 & $+47.5$  & 0.53 & 0.01 \\
 \section{Ablation: is the physics residual needed?}\label{sec:abl}
 We finally test whether a Maxwell-residual term helps, on the square-patch task where the same resonance
 appears (Fig.~\ref{fig:ablation}). A data-free PINN (Maxwell residual only) cannot represent the
-resonance: its reflection phase stays essentially flat, with a resonance-region error of
+resonance: its reflection phase stays essentially flat, at a resonance-region error of
 \SI{91.8}{\degree}. Adding the same sparse anchors as a physics-informed \emph{hybrid} does not rescue
 it---and at matched anchors it is \emph{worse} than pure data (\SI{35}{\degree} for the best hybrid
 versus \SI{1.2}{\degree} for the identical anchors used as pure resonance-aware data). We verified this
 across the hybrid's design choices (data-loss weight, physics-weight annealing, additional cavity
 collocation): the only adjustments that improved the hybrid were those that \emph{suppressed} the
-physics term, i.e.\ that moved it back toward pure regression. The result is not an artefact of a naive
+physics term, i.e.\ moved it back toward pure regression. The result is not an artefact of a naive
 fixed loss weight. We also tested an \emph{advanced} hybrid with NTK/gradient-norm adaptive weighting,
 which rescales the data and physics terms so neither dominates by parameter-gradient
 magnitude~\cite{wanggrad2021}: on the two-parameter family at the matched $12$ anchors it reaches
@@ -868,7 +868,7 @@ conclusion is unchanged and in fact sharper: the data-free PINN still fails (res
 worse than pure data (\SI{82.2}{\degree} vs \SI{2.66}{\degree}, a $\sim\!31\times$ gap), and pure
 resonance-aware regression on the same anchors is best. The Maxwell residual remains an anti-regulariser as
 the geometry dimension grows; well-placed data is the lever in both the one- and two-parameter regimes.
-This does not claim universality across all formulations, but it removes the ``only true in the easy 1-D
+This claims no universality across all formulations, but it removes the ``only true in the easy 1-D
 case'' caveat.
 
 \begin{figure}[!htbp]\centering
@@ -883,11 +883,11 @@ remains $\sim\!26\times$ worse than pure data, so the result is not a naive-loss
 \end{figure}
 
 \section{Aperture-level demonstration: full-wave anomalous reflection}\label{sec:steer}
-What this section delivers is the \emph{pipeline closure}, not the grating: we test whether the
+This section delivers the \emph{pipeline closure}, not the grating: we test whether the
 surrogate$\to$geometry$\to$full-wave loop closes and whether the deflection \emph{angle} is controllable by
 design. Aperture \emph{efficiency} is out of scope here (and reported honestly as a limitation),
-because a single-resonance cell cannot deliver it; the evidence task is angle control through the
-differentiable model, end to end. To that end we close the loop with a full-wave \emph{anomalous-reflection}
+because a single-resonance cell cannot deliver it; the evidence task is end-to-end angle control through the
+differentiable model. To that end we close the loop with a full-wave \emph{anomalous-reflection}
 demonstration (a coded metagrating, not a fed reflectarray). A linear reflection-phase ramp of
 super-period $\Lambda=Mp$ ($p$ the cell pitch) deflects a normally-incident plane wave into the anomalous
 order $\theta=\arcsin(\lambda_0/\Lambda)$ by the generalized Snell law~\cite{yu2011,sun2012}; choosing the
@@ -901,8 +901,8 @@ spatial Fourier transform.
 The full-wave anomalous order is aimed almost exactly where predicted
 (Table~\ref{tab:steer}, Fig.~\ref{fig:steer}): as $M$ runs $8\!\to\!3$ its angle scans
 $11.3^\circ\!\to\!31.7^\circ$, within $\approx\!\SI{0.3}{\degree}$ of generalized Snell at every point.
-This angle control is what a high-$Q$ Fabry--P\'erot cavity cannot provide. We report efficiency without
-embellishment, and note it does \emph{not} make this a usable aperture. The anomalous order carries only
+This angle control is what a high-$Q$ Fabry--P\'erot cavity cannot provide. We report efficiency plainly,
+and note that it does \emph{not} make this a usable aperture. The anomalous order carries only
 $\approx\!29$--$39\%$ of the power, and at small $M$ ($M\!=\!3,4,5$) the specular ($m{=}0$) order actually
 carries \emph{more} ($52/42/44\%$); the anomalous lobe is correctly aimed but is not dominant there. Two
 causes compound: a single patch realises only $211^\circ$ of reflection phase along a 1-D size cut
@@ -928,7 +928,7 @@ peak tracks the generalized-Snell angle (markers). The steer angle is re-codable
 \end{figure}
 
 \section{Discussion}\label{sec:disc}
-We draw out three messages. First, for sub-wavelength resonant cells the dominant cost---full-wave
+Three messages stand out. First, for sub-wavelength resonant cells the dominant cost---full-wave
 characterisation---is minimised not by a cleverer learner but by \emph{where} the few samples are
 placed: resonance-aware active sampling cuts the resonance-region error by an order of magnitude at
 fixed budget and steepens the error-versus-budget law from $N^{-0.8}$ to $\approx\!N^{-2.3}$. This specialises
@@ -943,14 +943,14 @@ global-kernel support-vector model, so ``use active learning'' is incomplete adv
 learner that tolerates clustered data.'' Third, the physics residual---attractive because it needs no
 data---is the wrong tool for this response: it fails alone and degrades the data fit when added,
 consistent with PINN stiffness and spectral-bias
-analyses~\cite{wang2021ntk,tancik2020}. We are careful not to overgeneralise:
+analyses~\cite{wang2021ntk,tancik2020}. We do not overgeneralise:
 this is established for a \emph{low-dimensional, total-field} formulation of one resonant cell, a regime
 where data is cheap and pure regression is already strong; a scattered-field reformulation (see the
 outlook below) may avoid the anti-regularisation, and the PINN value proposition (no data, higher dimension) is
 not what this testbed probes. The conditional lesson---for this class of low-dimensional resonant
 responses, a total-field Maxwell residual does not help and can hurt---is what we claim.
 
-\paragraph{Scope and threats to validity.} We state the boundaries of every claim explicitly. (1)~The
+\paragraph{Scope and threats to validity.} We state the boundary of every claim explicitly. (1)~The
 study is \emph{simulation-only} with a full-wave (not measured) baseline; no measured hardware is reported.
 (2)~A \emph{single} full-wave solver (openEMS) is the reference throughout, so solver-specific bias is not
 ruled out, though it is independently spot-checked (a square-patch cross-check agreeing to $\sim\!4^\circ$
@@ -970,8 +970,8 @@ interval over seeds (Tables~\ref{tab:scaling},~\ref{tab:3d}), and the data-effic
 holding outside the per-budget $\pm$std bands rather than as a bare point estimate.
 
 For a \emph{sampling-and-surrogate methodology} the full-wave reference is the correct and standard one---the
-method's job is to reproduce the solver from few calls, exactly as in prior active-learning surrogate work
-that validates against the solver~\cite{pestourie2020}---and hardware measurement is the natural next
+method's job is to reproduce the solver from few calls, as in prior active-learning surrogate work
+that validates against the solver~\cite{pestourie2020}---so hardware measurement is the natural next
 milestone rather than a gap in the present claim. Beyond this, the cell is parameterised by two
 dimensions, and the magnitude near resonance is intrinsically less controllable than the phase because
 $|\Gamma|$ physically dips there. Natural extensions are higher-dimensional cells (adding, e.g., a slot
@@ -992,7 +992,7 @@ quantified data-efficiency law and a device-level negative result on physics-inf
 expensive-to-sample, resonance-dominated parametric responses, here instantiated and validated end to end
 as a data-efficient, differentiable unit-cell design tool, with each method choice justified by direct
 comparison. We demonstrate it on one reflectarray cell class in simulation and claim no universality
-beyond that.
+beyond that scope.
 
 \section*{CRediT authorship contribution statement}
 \textbf{Long Zhang}: Conceptualization, Methodology, Software, Investigation, Writing -- original draft,
