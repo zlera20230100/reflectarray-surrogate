@@ -408,7 +408,7 @@ objection is that any sensible active-learning rule would do as well. It does no
 information-theoretic baseline---Gaussian-process \emph{uncertainty} (maximum posterior-variance) sampling,
 fit on the acquired anchors only---and it lands at \SI{5.56}{\degree} resonance error with exponent
 $k\!=\!0.95\,[0.84,1.04]$ at $N\!=\!36$: barely better than uniform (\SI{6.9}{\degree}, $0.82$) and
-$\sim\!20\times$ worse than the resonance-aware criterion (\SI{0.28}{\degree}, $k\!=\!2.26$, this comparison run). The reason is
+$\sim\!20\times$ worse than the resonance-aware criterion (\SI{0.28}{\degree}, $k\!=\!2.26$, this comparison run).\footnote{The GP and LOLA--Voronoi benchmarks were re-run jointly with the resonance-aware criterion under one shared seed and configuration, so every rule is evaluated under identical conditions. The resonance-aware value in this joint comparison (\SI{0.28}{\degree}, $k\!=\!2.26$) differs from the headline data-efficiency run of Tables~\ref{tab:dataeff}--\ref{tab:scaling} (\SI{0.37}{\degree}, $k\!=\!2.07$) only through run-to-run seed/configuration variation, not through any re-tuning of the baselines.} The reason is
 instructive: maximum-variance sampling \emph{space-fills}---it spreads points to reduce global
 uncertainty---whereas a resonance-dominated response needs points \emph{crowded} into the narrow band where
 the phase rotates. The curvature criterion is the principled choice here precisely because it targets that
